@@ -1,0 +1,96 @@
+<%- include('partials/head', { title: 'Set New Password — StudyBuddy', bodyClass: 'public-layout' }) %>
+
+<header class="top-navbar" style="border-bottom: 1px solid var(--border-subtle);">
+  <a href="/" class="navbar-brand">
+    <span class="brand-badge"><i class="fas fa-graduation-cap"></i></span>
+    <span>StudyBuddy</span>
+  </a>
+
+  <div class="navbar-actions">
+    <button type="button" class="btn-icon theme-toggle-btn" onclick="toggleTheme()" title="Toggle Theme">
+      <i class="fas fa-moon"></i>
+    </button>
+    <a href="/login" class="btn btn-outline btn-sm">Back to Login</a>
+  </div>
+</header>
+
+<main class="main-content" style="display: flex; align-items: center; justify-content: center; padding: 3rem 1.5rem; min-height: calc(100vh - var(--header-height)); background: radial-gradient(circle at center, var(--primary-light) 0%, transparent 70%);">
+  <div class="card" style="max-width: 440px; width: 100%; padding: 2.25rem; box-shadow: var(--shadow-xl); border-radius: var(--radius-xl);">
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <span class="brand-badge" style="width: 48px; height: 48px; font-size: 1.35rem; margin-bottom: 1rem;"><i class="fas fa-shield-halved"></i></span>
+      <h2 style="font-size: 1.75rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.35rem;">Reset Password</h2>
+      <p style="font-size: 0.9rem; color: var(--text-muted);">Choose a new secure password for your account.</p>
+    </div>
+
+    <% if (typeof error !== 'undefined' && error) { %>
+      <div style="background-color: var(--danger-bg); border-left: 4px solid var(--danger); padding: 0.85rem 1rem; border-radius: var(--radius-sm); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.65rem; color: var(--danger-text); font-size: 0.875rem;">
+        <i class="fas fa-exclamation-circle"></i>
+        <span><%= error %></span>
+      </div>
+    <% } %>
+
+    <% if (typeof success !== 'undefined' && success) { %>
+      <div style="background-color: var(--success-bg); border-left: 4px solid var(--success); padding: 1rem; border-radius: var(--radius-sm); margin-bottom: 1.5rem; text-align: center;">
+        <i class="fas fa-check-circle text-success" style="font-size: 1.5rem; margin-bottom: 0.5rem; display: block;"></i>
+        <div style="color: var(--success-text); font-weight: 600; margin-bottom: 1rem;"><%= success %></div>
+        <a href="/login" class="btn btn-primary" style="width: 100%;">
+          <i class="fas fa-arrow-right-to-bracket"></i> Proceed to Login
+        </a>
+      </div>
+    <% } else if (typeof token !== 'undefined' && token) { %>
+
+      <form action="/reset/<%= token %>" method="POST" id="resetPassForm">
+        <div class="form-group">
+          <label class="form-label" for="password">New Password</label>
+          <div class="input-with-icon">
+            <input type="password" id="password" name="password" class="form-control" placeholder="Min. 6 characters" required minlength="6" autocomplete="new-password">
+            <button type="button" class="input-icon-btn" onclick="togglePasswordVisibility('password', this)">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="confirmPassword">Confirm New Password</label>
+          <div class="input-with-icon">
+            <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" placeholder="••••••••" required minlength="6" autocomplete="new-password">
+            <button type="button" class="input-icon-btn" onclick="togglePasswordVisibility('confirmPassword', this)">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.75rem;">
+          <i class="fas fa-lock"></i> Update Password
+        </button>
+      </form>
+
+    <% } else { %>
+      <div style="text-align: center; margin-top: 1rem;">
+        <a href="/forgot" class="btn btn-secondary">Request New Reset Token</a>
+      </div>
+    <% } %>
+
+    <div style="text-align: center; margin-top: 1.75rem; font-size: 0.875rem;">
+      <a href="/login" style="color: var(--text-muted); font-weight: 500;">
+        <i class="fas fa-arrow-left"></i> Back to sign in
+      </a>
+    </div>
+  </div>
+</main>
+
+<script>
+const resetForm = document.getElementById('resetPassForm');
+if (resetForm) {
+  resetForm.addEventListener('submit', function(e) {
+    const p1 = document.getElementById('password').value;
+    const p2 = document.getElementById('confirmPassword').value;
+    if (p1 !== p2) {
+      e.preventDefault();
+      window.showToast('Passwords do not match!', 'error');
+    }
+  });
+}
+</script>
+
+<%- include('partials/footer') %>

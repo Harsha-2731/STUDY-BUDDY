@@ -1,0 +1,115 @@
+<% if (typeof user !== 'undefined' && user && !user.onboardingCompleted) { %>
+<div id="onboardingModal" class="modal-backdrop active" style="z-index: 300;">
+  <div class="modal-dialog" style="max-width: 560px;">
+    <div class="modal-header">
+      <div>
+        <h3 class="modal-title" style="display: flex; align-items: center; gap: 0.5rem;">
+          <span class="brand-badge" style="width: 32px; height: 32px; font-size: 0.95rem;"><i class="fas fa-sparkles"></i></span>
+          Welcome to StudyBuddy!
+        </h3>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">
+          Let's tailor your academic workspace to your engineering branch and semester.
+        </p>
+      </div>
+    </div>
+    
+    <form id="onboardingForm" onsubmit="submitOnboarding(event)">
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label"><i class="fas fa-network-wired text-primary"></i> Engineering Branch</label>
+          <select name="academicBranch" class="form-select" required>
+            <option value="CSE" <%= (user.academicBranch === 'CSE') ? 'selected' : '' %>>Computer Science & Engineering (CSE)</option>
+            <option value="AIML" <%= (user.academicBranch === 'AIML') ? 'selected' : '' %>>Artificial Intelligence & Machine Learning (AIML)</option>
+            <option value="AIDS" <%= (user.academicBranch === 'AIDS') ? 'selected' : '' %>>AI & Data Science (AIDS)</option>
+            <option value="IT" <%= (user.academicBranch === 'IT') ? 'selected' : '' %>>Information Technology (IT)</option>
+            <option value="CSIT" <%= (user.academicBranch === 'CSIT') ? 'selected' : '' %>>Computer Science & Information Technology (CSIT)</option>
+            <option value="CIC" <%= (user.academicBranch === 'CIC') ? 'selected' : '' %>>Cyber Security & IoT (CIC)</option>
+            <option value="ECE" <%= (user.academicBranch === 'ECE') ? 'selected' : '' %>>Electronics & Communication Engineering (ECE)</option>
+            <option value="EEE" <%= (user.academicBranch === 'EEE') ? 'selected' : '' %>>Electrical & Electronics Engineering (EEE)</option>
+            <option value="MECH" <%= (user.academicBranch === 'MECH') ? 'selected' : '' %>>Mechanical Engineering (MECH)</option>
+            <option value="CIVIL" <%= (user.academicBranch === 'CIVIL') ? 'selected' : '' %>>Civil Engineering (CIVIL)</option>
+          </select>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label class="form-label"><i class="fas fa-calendar text-primary"></i> Academic Year</label>
+            <select name="academicYear" class="form-select" required>
+              <option value="1st Year" <%= (user.academicYear === '1st Year') ? 'selected' : '' %>>1st Year</option>
+              <option value="2nd Year" <%= (user.academicYear === '2nd Year') ? 'selected' : '' %>>2nd Year</option>
+              <option value="3rd Year" <%= (user.academicYear === '3rd Year') ? 'selected' : '' %>>3rd Year</option>
+              <option value="4th Year" <%= (user.academicYear === '4th Year') ? 'selected' : '' %>>4th Year</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label"><i class="fas fa-layer-group text-primary"></i> Semester</label>
+            <select name="academicSemester" class="form-select" required>
+              <option value="1st sem" <%= (user.academicSemester === '1st sem') ? 'selected' : '' %>>1st Semester</option>
+              <option value="2nd sem" <%= (user.academicSemester === '2nd sem') ? 'selected' : '' %>>2nd Semester</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label"><i class="fas fa-heart text-primary"></i> Focus Subjects / Topics (optional)</label>
+          <input type="text" name="favoriteSubjects" class="form-control" placeholder="e.g. M1, Data Structures, Python, Physics" value="<%= user.favoriteSubjects ? user.favoriteSubjects.join(', ') : '' %>">
+          <small style="color: var(--text-muted); font-size: 0.775rem;">Comma-separated subjects you are focusing on this semester.</small>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline btn-sm" onclick="skipOnboarding()">Skip for Now</button>
+        <button type="submit" class="btn btn-primary">
+          <i class="fas fa-check"></i> Save & Personalize Dashboard
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+async function submitOnboarding(e) {
+  e.preventDefault();
+  const form = e.target;
+  const formData = new FormData(form);
+  const payload = {
+    academicBranch: formData.get('academicBranch'),
+    academicYear: formData.get('academicYear'),
+    academicSemester: formData.get('academicSemester'),
+    favoriteSubjects: formData.get('favoriteSubjects').split(',').map(s => s.trim()).filter(Boolean),
+    onboardingCompleted: true
+  };
+
+  try {
+    const res = await fetch('/api/user/onboarding', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (res.ok) {
+      document.getElementById('onboardingModal').remove();
+      window.showToast('Academic profile updated! Welcome aboard.', 'success');
+      setTimeout(() => window.location.reload(), 600);
+    } else {
+      window.showToast('Failed to save profile. Please try again.', 'error');
+    }
+  } catch (err) {
+    window.showToast('Network error while saving profile.', 'error');
+  }
+}
+
+async function skipOnboarding() {
+  try {
+    await fetch('/api/user/onboarding', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ onboardingCompleted: true })
+    });
+    document.getElementById('onboardingModal').remove();
+  } catch (err) {
+    document.getElementById('onboardingModal').remove();
+  }
+}
+</script>
+<% } %>

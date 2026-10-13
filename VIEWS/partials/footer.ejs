@@ -1,0 +1,29 @@
+  <!-- Shared Toast Notifications Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Reusable Modal Backdrop -->
+  <div id="globalModalBackdrop" class="modal-backdrop" onclick="if(event.target === this) this.classList.remove('active')">
+    <div class="modal-dialog" id="globalModalDialog">
+      <!-- Dynamically filled by JavaScript -->
+    </div>
+  </div>
+
+  <footer style="margin-top: auto; padding: 1.5rem 2rem; border-top: 1px solid var(--border-subtle); background-color: var(--bg-surface); font-size: 0.85rem; color: var(--text-muted);">
+    <div style="max-width: 1400px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem;">
+      <div style="display: flex; align-items: center; gap: 0.65rem;">
+        <span class="brand-badge" style="width: 26px; height: 26px; font-size: 0.8rem;"><i class="fas fa-graduation-cap"></i></span>
+        <span style="font-weight: 700; color: var(--text-main);">StudyBuddy</span>
+        <span>&copy; <%= new Date().getFullYear() %> &bull; Academic Workspace for Engineering Students</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 1.5rem;">
+        <span class="badge badge-success"><i class="fas fa-circle-check"></i> System Operational</span>
+        <span>1,350+ Verified Resources</span>
+        <a href="/resources" style="color: var(--text-muted);">Explore Syllabus</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- App Core JS Bundle -->
+  <script src="/app.js"></script>
+</body>
+</html>

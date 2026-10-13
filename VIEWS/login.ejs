@@ -1,0 +1,103 @@
+<%- include('partials/head', { title: 'Sign In — StudyBuddy', bodyClass: 'public-layout' }) %>
+
+<header class="top-navbar" style="border-bottom: 1px solid var(--border-subtle);">
+  <a href="/" class="navbar-brand">
+    <span class="brand-badge"><i class="fas fa-graduation-cap"></i></span>
+    <span>StudyBuddy</span>
+  </a>
+
+  <div class="navbar-actions">
+    <button type="button" class="btn-icon theme-toggle-btn" onclick="toggleTheme()" title="Toggle Theme">
+      <i class="fas fa-moon"></i>
+    </button>
+    <a href="/register" class="btn btn-outline btn-sm">Create Account</a>
+  </div>
+</header>
+
+<main class="main-content" style="display: flex; align-items: center; justify-content: center; padding: 3rem 1.5rem; min-height: calc(100vh - var(--header-height)); background: radial-gradient(circle at center, var(--primary-light) 0%, transparent 70%);">
+  <div class="card" style="max-width: 440px; width: 100%; padding: 2.25rem; box-shadow: var(--shadow-xl); border-radius: var(--radius-xl);">
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <span class="brand-badge" style="width: 48px; height: 48px; font-size: 1.35rem; margin-bottom: 1rem;"><i class="fas fa-graduation-cap"></i></span>
+      <h2 style="font-size: 1.75rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.35rem;">Welcome Back</h2>
+      <p style="font-size: 0.9rem; color: var(--text-muted);">Access your engineering notes and syllabus workspace.</p>
+    </div>
+
+    <% if (typeof error !== 'undefined' && error) { %>
+      <div style="background-color: var(--danger-bg); border-left: 4px solid var(--danger); padding: 0.85rem 1rem; border-radius: var(--radius-sm); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.65rem; color: var(--danger-text); font-size: 0.875rem;">
+        <i class="fas fa-exclamation-circle"></i>
+        <span><%= error %></span>
+      </div>
+    <% } %>
+
+    <% if (typeof success !== 'undefined' && success) { %>
+      <div style="background-color: var(--success-bg); border-left: 4px solid var(--success); padding: 0.85rem 1rem; border-radius: var(--radius-sm); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.65rem; color: var(--success-text); font-size: 0.875rem;">
+        <i class="fas fa-check-circle"></i>
+        <span><%= success %></span>
+      </div>
+    <% } %>
+
+    <!-- Quick Demo Accounts Helper -->
+    <div style="background-color: var(--bg-subtle); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 0.85rem; margin-bottom: 1.5rem;">
+      <div style="font-size: 0.775rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: space-between;">
+        <span><i class="fas fa-key text-primary"></i> Quick Demo Login</span>
+        <span style="font-size: 0.7rem; color: var(--primary);">1-Click Fill</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="fillDemo('student')" style="font-size: 0.775rem; justify-content: flex-start;">
+          <i class="fas fa-user-graduate text-primary"></i> Demo Student
+        </button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="fillDemo('admin')" style="font-size: 0.775rem; justify-content: flex-start;">
+          <i class="fas fa-shield-halved text-warning"></i> Demo Admin
+        </button>
+      </div>
+    </div>
+
+    <form action="/login" method="POST">
+      <div class="form-group">
+        <label class="form-label" for="userEmail">Student Email</label>
+        <div class="input-with-icon">
+          <input type="email" id="userEmail" name="userEmail" class="form-control" placeholder="student@studybuddy.edu" required autofocus autocomplete="email">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+          <label class="form-label" for="userPassword" style="margin-bottom: 0;">Password</label>
+          <a href="/forgot" style="font-size: 0.8rem; color: var(--primary); font-weight: 500;">Forgot password?</a>
+        </div>
+        <div class="input-with-icon">
+          <input type="password" id="userPassword" name="userPassword" class="form-control" placeholder="••••••••" required autocomplete="current-password">
+          <button type="button" class="input-icon-btn" onclick="togglePasswordVisibility('userPassword', this)" title="Show password">
+            <i class="fas fa-eye"></i>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem; padding: 0.75rem;">
+        <i class="fas fa-arrow-right-to-bracket"></i> Sign In to StudyBuddy
+      </button>
+    </form>
+
+    <div style="text-align: center; margin-top: 1.75rem; font-size: 0.875rem; color: var(--text-muted);">
+      Don't have an account yet? 
+      <a href="/register" style="color: var(--primary); font-weight: 600;">Create free account</a>
+    </div>
+  </div>
+</main>
+
+<script>
+function fillDemo(type) {
+  const emailInput = document.getElementById('userEmail');
+  const passInput = document.getElementById('userPassword');
+  if (type === 'student') {
+    emailInput.value = 'student@studybuddy.edu';
+    passInput.value = 'Student@123';
+  } else if (type === 'admin') {
+    emailInput.value = 'admin@studybuddy.edu';
+    passInput.value = 'Admin@123';
+  }
+  window.showToast(`Filled ${type} credentials! Click 'Sign In'`, 'info');
+}
+</script>
+
+<%- include('partials/footer') %>

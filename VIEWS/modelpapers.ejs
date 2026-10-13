@@ -1,0 +1,93 @@
+<%- include('partials/head', { title: 'Engineering Model Papers & Question Banks — StudyBuddy', bodyClass: 'app-layout' }) %>
+
+<%- include('partials/sidebar', { activeNav: 'modelpapers' }) %>
+
+<div class="main-content">
+  <%- include('partials/navbar', { pageTitle: 'Model Papers & Question Banks' }) %>
+
+  <main class="page-container">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 2rem;">
+      <div>
+        <h1 style="font-size: 1.85rem; font-weight: 800; color: var(--text-main); line-height: 1.2;">
+          Model Papers &amp; Previous Question Banks
+        </h1>
+        <p style="font-size: 0.95rem; color: var(--text-muted); margin-top: 0.25rem;">
+          Practice with university model question papers, semester blueprints, and sample questions.
+        </p>
+      </div>
+    </div>
+
+    <!-- Filter by Year & Semester -->
+    <div class="card" style="padding: 1.25rem; margin-bottom: 2rem;">
+      <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center;">
+        <div style="font-weight: 600; font-size: 0.85rem; color: var(--text-main);"><i class="fas fa-filter text-primary"></i> Filter Papers:</div>
+        
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <button type="button" class="btn btn-sm btn-primary" onclick="filterPapers('all', this)">All Semesters</button>
+          <button type="button" class="btn btn-sm btn-secondary" onclick="filterPapers('1-1', this)">1st Year &bull; Sem 1</button>
+          <button type="button" class="btn btn-sm btn-secondary" onclick="filterPapers('1-2', this)">1st Year &bull; Sem 2</button>
+          <button type="button" class="btn btn-sm btn-secondary" onclick="filterPapers('2-1', this)">2nd Year &bull; Sem 1</button>
+          <button type="button" class="btn btn-sm btn-secondary" onclick="filterPapers('2-2', this)">2nd Year &bull; Sem 2</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Model Papers Grid -->
+    <div class="resource-grid" id="papersGrid">
+      <% const samplePapers = [
+        { code: 'M1', title: 'Mathematics-1 Comprehensive Model Paper', sem: '1-1', branch: 'All Branches', year: '2024 Blueprint', qCount: '5 Units Q&A', link: 'https://drive.google.com/file/d/109OYGdzd6YZqAQg_DhySZOyyFAU27cVr/view?usp=sharing' },
+        { code: 'CHEM', title: 'Engineering Chemistry Previous Year Solved Paper', sem: '1-1', branch: 'All Branches', year: '2024 Exam', qCount: 'Unit 1-5 Solved', link: 'https://drive.google.com/file/d/109OYGdzd6YZqAQg_DhySZOyyFAU27cVr/view?usp=sharing' },
+        { code: 'CP', title: 'Computer Programming C-Language Model Set', sem: '1-1', branch: 'CSE/IT/ECE', year: '2024 Blueprint', qCount: 'Coding + Theory', link: 'https://drive.google.com/file/d/109OYGdzd6YZqAQg_DhySZOyyFAU27cVr/view?usp=sharing' },
+        { code: 'DS', title: 'Data Structures Question Bank with Diagrams', sem: '1-2', branch: 'CSE/IT/AIML', year: '2024 Blueprint', qCount: 'Trees, Graphs, Sorting', link: 'https://drive.google.com/file/d/109OYGdzd6YZqAQg_DhySZOyyFAU27cVr/view?usp=sharing' },
+        { code: 'PHY', title: 'Applied Physics Model Question Paper', sem: '1-2', branch: 'All Branches', year: '2024 Exam', qCount: 'Lasers, Optics, Solids', link: 'https://drive.google.com/file/d/109OYGdzd6YZqAQg_DhySZOyyFAU27cVr/view?usp=sharing' },
+        { code: 'BEEE', title: 'Basic Electrical & Electronics Question Paper', sem: '1-2', branch: 'All Branches', year: '2024 Exam', qCount: 'AC Circuits & Machines', link: 'https://drive.google.com/file/d/109OYGdzd6YZqAQg_DhySZOyyFAU27cVr/view?usp=sharing' },
+        { code: 'DSD', title: 'Digital System Design 2nd Year Model Paper', sem: '2-1', branch: 'ECE/EEE/CSE', year: '2024 Exam', qCount: 'K-Maps & Sequential', link: 'https://drive.google.com/file/d/109OYGdzd6YZqAQg_DhySZOyyFAU27cVr/view?usp=sharing' },
+        { code: 'OOPJ', title: 'Object Oriented Programming Java Model Paper', sem: '2-1', branch: 'CSE/IT/AIDS', year: '2024 Blueprint', qCount: 'Multithreading & Collections', link: 'https://drive.google.com/file/d/109OYGdzd6YZqAQg_DhySZOyyFAU27cVr/view?usp=sharing' }
+      ]; %>
+
+      <% samplePapers.forEach(p => { %>
+        <div class="resource-card paper-card" data-sem="<%= p.sem %>">
+          <div>
+            <div class="resource-card-header">
+              <span class="badge badge-primary"><%= p.branch %></span>
+              <span class="badge badge-secondary"><%= p.year %></span>
+            </div>
+
+            <h3 class="resource-title" style="margin-bottom: 0.5rem;"><%= p.title %></h3>
+            
+            <div class="resource-badges">
+              <span class="badge badge-secondary"><i class="fas fa-file-lines"></i> <%= p.code %></span>
+              <span class="badge badge-success"><i class="fas fa-check"></i> <%= p.qCount %></span>
+            </div>
+          </div>
+
+          <div class="resource-footer">
+            <span style="font-size: 0.775rem; color: var(--text-muted);"><i class="fas fa-calendar-day"></i> Sem <%= p.sem %></span>
+            <a href="<%= p.link %>" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
+              <i class="fas fa-file-pdf"></i> View Paper
+            </a>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+  </main>
+</div>
+
+<script>
+function filterPapers(sem, btn) {
+  const allBtns = btn.parentElement.querySelectorAll('button');
+  allBtns.forEach(b => b.className = 'btn btn-sm btn-secondary');
+  btn.className = 'btn btn-sm btn-primary';
+
+  const cards = document.querySelectorAll('.paper-card');
+  cards.forEach(c => {
+    if (sem === 'all' || c.getAttribute('data-sem') === sem) {
+      c.style.display = 'flex';
+    } else {
+      c.style.display = 'none';
+    }
+  });
+}
+</script>
+
+<%- include('partials/footer') %>

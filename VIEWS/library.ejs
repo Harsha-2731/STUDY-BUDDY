@@ -1,0 +1,99 @@
+<%- include('partials/head', { title: 'My Personal Library — Bookmarks', bodyClass: 'app-layout' }) %>
+
+<%- include('partials/sidebar', { activeNav: 'library' }) %>
+
+<div class="main-content">
+  <%- include('partials/navbar', { pageTitle: 'My Library' }) %>
+
+  <main class="page-container">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 2rem;">
+      <div>
+        <h1 style="font-size: 1.85rem; font-weight: 800; color: var(--text-main); line-height: 1.2;">
+          My Personal Library
+        </h1>
+        <p style="font-size: 0.95rem; color: var(--text-muted); margin-top: 0.25rem;">
+          Quickly access and organize your bookmarked notes, PDFs, and syllabus materials.
+        </p>
+      </div>
+
+      <a href="/resources" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Browse & Bookmark More Notes
+      </a>
+    </div>
+
+    <!-- Saved Resources Grid -->
+    <% if (bookmarks && bookmarks.length > 0) { %>
+      <div class="resource-grid" style="margin-bottom: 2.5rem;">
+        <% bookmarks.forEach(item => { %>
+          <div class="resource-card" id="bookmark-card-<%= item._id %>">
+            <div>
+              <div class="resource-card-header">
+                <span class="badge badge-primary">
+                  <%= item.branch %> &bull; <%= item.year %>
+                </span>
+                <button type="button" class="btn-icon btn-sm active" 
+                        onclick="removeBookmark('<%= item._id %>')" title="Remove from Library" style="color: var(--danger);">
+                  <i class="fas fa-trash-can"></i>
+                </button>
+              </div>
+
+              <h3 class="resource-title" style="margin-bottom: 0.5rem;">
+                <%= item.topic %>
+              </h3>
+
+              <div class="resource-badges">
+                <span class="badge badge-secondary"><i class="fas fa-book"></i> <%= item.subject %></span>
+                <span class="badge badge-secondary"><i class="fas fa-layer-group"></i> <%= item.unit || '1st unit' %></span>
+              </div>
+            </div>
+
+            <div class="resource-footer">
+              <span style="font-size: 0.75rem; color: var(--text-light); text-transform: uppercase;">
+                <%= item.type || 'Drive Link' %>
+              </span>
+              <a href="<%= item.link %>" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
+                <i class="fas fa-arrow-up-right-from-square"></i> Open Note
+              </a>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    <% } else { %>
+      <div class="empty-state">
+        <div class="empty-state-icon"><i class="fas fa-bookmark"></i></div>
+        <h3 class="empty-state-title">Your personal library is empty</h3>
+        <p class="empty-state-desc">
+          You haven't saved any study materials yet. Explore our engineering subjects catalog and click the bookmark icon on any note.
+        </p>
+        <a href="/resources" class="btn btn-primary">
+          <i class="fas fa-compass"></i> Explore Engineering Resources
+        </a>
+      </div>
+    <% } %>
+  </main>
+</div>
+
+<script>
+async function removeBookmark(id) {
+  if (!confirm('Remove this resource from your saved library?')) return;
+  try {
+    const res = await fetch(`/api/bookmarks/${id}`, { method: 'DELETE' });
+    const data = await res.json();
+    if (res.ok) {
+      const card = document.getElementById(`bookmark-card-${id}`);
+      if (card) {
+        card.style.opacity = '0';
+        card.style.transform = 'scale(0.9)';
+        setTimeout(() => card.remove(), 250);
+      }
+      window.showToast('Removed from personal library', 'info');
+    } else {
+      window.showToast(data.error || 'Failed to remove', 'error');
+    }
+  } catch (e) {
+    window.showToast('Network error while removing bookmark', 'error');
+  }
+}
+</script>
+
+<%- include('partials/footer') %>

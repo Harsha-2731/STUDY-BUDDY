@@ -1,0 +1,363 @@
+<%- include('partials/head', { title: 'Admin Portal — StudyBuddy', bodyClass: 'app-layout' }) %>
+
+<%- include('partials/sidebar', { activeNav: 'admin' }) %>
+
+<div class="main-content">
+  <%- include('partials/navbar', { pageTitle: 'System Administration' }) %>
+
+  <main class="page-container">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 2rem;">
+      <div>
+        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem;">
+          <span class="badge badge-primary"><i class="fas fa-shield-halved"></i> Authorized Administrator</span>
+        </div>
+        <h1 style="font-size: 1.85rem; font-weight: 800; color: var(--text-main); line-height: 1.2;">
+          Administration Portal
+        </h1>
+        <p style="font-size: 0.95rem; color: var(--text-muted); margin-top: 0.25rem;">
+          Manage academic curriculum, review user metrics, and import bulk syllabus materials.
+        </p>
+      </div>
+
+      <div style="display: flex; gap: 0.75rem;">
+        <button type="button" class="btn btn-secondary" onclick="document.getElementById('importSection').scrollIntoView({behavior:'smooth'})">
+          <i class="fas fa-file-import"></i> Bulk Import JSON/CSV
+        </button>
+        <button type="button" class="btn btn-primary" onclick="openAddResourceModal()">
+          <i class="fas fa-plus"></i> Add New Resource
+        </button>
+      </div>
+    </div>
+
+    <!-- Administrative Metrics Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; margin-bottom: 2.5rem;">
+      <div class="stat-card">
+        <div>
+          <div class="stat-label">Total Resources</div>
+          <div class="stat-value"><%= adminStats.totalResources || 0 %></div>
+          <div style="font-size: 0.775rem; color: var(--text-muted); margin-top: 0.35rem;">Live academic materials</div>
+        </div>
+        <div class="stat-icon primary"><i class="fas fa-layer-group"></i></div>
+      </div>
+
+      <div class="stat-card">
+        <div>
+          <div class="stat-label">Registered Users</div>
+          <div class="stat-value"><%= adminStats.totalUsers || 0 %></div>
+          <div style="font-size: 0.775rem; color: var(--text-muted); margin-top: 0.35rem;">Students &amp; Admins</div>
+        </div>
+        <div class="stat-icon success"><i class="fas fa-users"></i></div>
+      </div>
+
+      <div class="stat-card">
+        <div>
+          <div class="stat-label">Engineering Branches</div>
+          <div class="stat-value"><%= adminStats.branchBreakdown ? Object.keys(adminStats.branchBreakdown).length : 10 %></div>
+          <div style="font-size: 0.775rem; color: var(--text-muted); margin-top: 0.35rem;">Curricula configured</div>
+        </div>
+        <div class="stat-icon secondary"><i class="fas fa-network-wired"></i></div>
+      </div>
+
+      <div class="stat-card">
+        <div>
+          <div class="stat-label">Distinct Subjects</div>
+          <div class="stat-value"><%= adminStats.distinctSubjects || 0 %></div>
+          <div style="font-size: 0.775rem; color: var(--text-muted); margin-top: 0.35rem;">Active courses</div>
+        </div>
+        <div class="stat-icon warning"><i class="fas fa-book-bookmark"></i></div>
+      </div>
+    </div>
+
+    <!-- Branch Distribution Breakdown -->
+    <div class="card" style="margin-bottom: 2.5rem; padding: 1.5rem;">
+      <div class="card-header" style="padding: 0 0 1rem; margin-bottom: 1rem;">
+        <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-main);">Resource Distribution by Branch</h3>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.85rem;">
+        <% if (adminStats.branchBreakdown) { %>
+          <% Object.entries(adminStats.branchBreakdown).forEach(([branch, count]) => { %>
+            <div style="background-color: var(--bg-subtle); padding: 0.85rem; border-radius: var(--radius-md); text-align: center; border: 1px solid var(--border-subtle);">
+              <div style="font-weight: 800; font-size: 1.1rem; color: var(--primary);"><%= branch %></div>
+              <div style="font-size: 0.85rem; font-weight: 600; color: var(--text-main); margin-top: 0.2rem;"><%= count %></div>
+              <div style="font-size: 0.7rem; color: var(--text-muted);">materials</div>
+            </div>
+          <% }); %>
+        <% } %>
+      </div>
+    </div>
+
+    <!-- Recent Resources Management Table -->
+    <div class="card" style="margin-bottom: 2.5rem;">
+      <div class="card-header">
+        <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-main);">Manage Academic Resources</h3>
+        <span style="font-size: 0.85rem; color: var(--text-muted);">Showing recent items</span>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Topic / Title</th>
+              <th>Subject</th>
+              <th>Branch</th>
+              <th>Year / Sem</th>
+              <th>Unit</th>
+              <th>Link</th>
+              <th style="text-align: right;">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (recentResources && recentResources.length > 0) { %>
+              <% recentResources.forEach(res => { %>
+                <tr id="admin-res-<%= res._id %>">
+                  <td style="font-weight: 600; max-width: 240px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                    <%= res.topic %>
+                  </td>
+                  <td><span class="badge badge-secondary"><%= res.subject %></span></td>
+                  <td><span class="badge badge-primary"><%= res.branch %></span></td>
+                  <td style="font-size: 0.825rem; color: var(--text-muted);"><%= res.year %> &bull; <%= res.semester %></td>
+                  <td><%= res.unit || '1st unit' %></td>
+                  <td>
+                    <a href="<%= res.link %>" target="_blank" rel="noopener noreferrer" style="font-size: 0.825rem;">
+                      <i class="fas fa-external-link-alt"></i> View
+                    </a>
+                  </td>
+                  <td style="text-align: right;">
+                    <button type="button" class="btn btn-danger btn-sm" onclick="deleteResourceAdmin('<%= res._id %>')">
+                      <i class="fas fa-trash-can"></i> Delete
+                    </button>
+                  </td>
+                </tr>
+              <% }); %>
+            <% } else { %>
+              <tr>
+                <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">No resources found.</td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Bulk Data Import Section -->
+    <div class="card" id="importSection" style="padding: 2rem;">
+      <div class="card-header" style="padding: 0 0 1rem; margin-bottom: 1.5rem;">
+        <div>
+          <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-main);">Bulk Academic Data Import</h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">
+            Upload JSON files (like <code>study_data.json</code>) or CSV records to seed materials in bulk.
+          </p>
+        </div>
+        <span class="badge badge-primary"><i class="fas fa-database"></i> Batch Safe</span>
+      </div>
+
+      <form id="importForm" onsubmit="handleBulkImport(event)">
+        <div class="form-group">
+          <label class="form-label">Upload JSON file</label>
+          <input type="file" id="importFile" accept=".json,.csv" class="form-control" required>
+          <small style="color: var(--text-muted); font-size: 0.775rem; margin-top: 0.35rem; display: block;">
+            Expected JSON format: Array of objects with keys: <code>branch, year, semester, subject, unit, topic, link</code>.
+          </small>
+        </div>
+
+        <div id="importPreview" style="display: none; background: var(--bg-subtle); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 1.5rem; font-size: 0.85rem;">
+          <div style="font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;" id="previewTitle">File Preview</div>
+          <div id="previewDetails" style="color: var(--text-muted);"></div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="importSubmitBtn">
+          <i class="fas fa-file-arrow-up"></i> Validate &amp; Import Data
+        </button>
+      </form>
+    </div>
+  </main>
+</div>
+
+<!-- Modal: Add Single Resource -->
+<div id="addResourceModal" class="modal-backdrop">
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <h3 class="modal-title">Add Academic Resource</h3>
+      <button type="button" class="btn-icon btn-sm" onclick="closeAddResourceModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <form id="addResourceForm" onsubmit="handleAddResource(event)">
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Topic Name / Title</label>
+          <input type="text" name="topic" class="form-control" placeholder="e.g. Mathematics-1 - Differential Calculus" required>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label class="form-label">Branch</label>
+            <select name="branch" class="form-select" required>
+              <option value="CSE">CSE</option>
+              <option value="AIML">AIML</option>
+              <option value="AIDS">AIDS</option>
+              <option value="IT">IT</option>
+              <option value="CSIT">CSIT</option>
+              <option value="CIC">CIC</option>
+              <option value="ECE">ECE</option>
+              <option value="EEE">EEE</option>
+              <option value="MECH">MECH</option>
+              <option value="CIVIL">CIVIL</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Subject</label>
+            <input type="text" name="subject" class="form-control" placeholder="e.g. M1, DS, PHYSICS" required>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label class="form-label">Year</label>
+            <select name="year" class="form-select" required>
+              <option value="1st Year">1st Year</option>
+              <option value="2nd Year">2nd Year</option>
+              <option value="3rd Year">3rd Year</option>
+              <option value="4th Year">4th Year</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Semester</label>
+            <select name="semester" class="form-select" required>
+              <option value="1st sem">1st sem</option>
+              <option value="2nd sem">2nd sem</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Unit</label>
+          <input type="text" name="unit" class="form-control" placeholder="e.g. 1st unit" value="1st unit">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Resource Cloud Link / Google Drive URL</label>
+          <input type="url" name="link" class="form-control" placeholder="https://drive.google.com/..." required>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="closeAddResourceModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save Resource</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function openAddResourceModal() {
+  document.getElementById('addResourceModal').classList.add('active');
+}
+function closeAddResourceModal() {
+  document.getElementById('addResourceModal').classList.remove('active');
+}
+
+async function handleAddResource(e) {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  const payload = Object.fromEntries(formData.entries());
+
+  try {
+    const res = await fetch('/api/admin/resources', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (res.ok) {
+      window.showToast('Resource added successfully!', 'success');
+      closeAddResourceModal();
+      setTimeout(() => window.location.reload(), 600);
+    } else {
+      window.showToast(data.error || 'Failed to add resource', 'error');
+    }
+  } catch (err) {
+    window.showToast('Network error saving resource', 'error');
+  }
+}
+
+async function deleteResourceAdmin(id) {
+  if (!confirm('Permanently delete this academic resource from the platform?')) return;
+  try {
+    const res = await fetch(`/api/admin/resources/${id}`, { method: 'DELETE' });
+    if (res.ok) {
+      document.getElementById(`admin-res-${id}`)?.remove();
+      window.showToast('Resource deleted from database', 'info');
+    } else {
+      window.showToast('Failed to delete resource', 'error');
+    }
+  } catch (e) {
+    window.showToast('Network error deleting resource', 'error');
+  }
+}
+
+// Bulk Import Handling
+document.getElementById('importFile').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(evt) {
+    try {
+      const parsed = JSON.parse(evt.target.result);
+      if (Array.isArray(parsed)) {
+        document.getElementById('importPreview').style.display = 'block';
+        document.getElementById('previewTitle').textContent = `Valid JSON detected (${parsed.length} records)`;
+        document.getElementById('previewDetails').textContent = `Sample: "${parsed[0]?.topic || 'N/A'}" (${parsed[0]?.branch || 'N/A'} - ${parsed[0]?.subject || 'N/A'})`;
+      }
+    } catch(err) {
+      document.getElementById('importPreview').style.display = 'block';
+      document.getElementById('previewTitle').textContent = `File Ready`;
+      document.getElementById('previewDetails').textContent = `File size: ${(file.size/1024).toFixed(1)} KB. Will be parsed on server.`;
+    }
+  };
+  reader.readAsText(file);
+});
+
+async function handleBulkImport(e) {
+  e.preventDefault();
+  const fileInput = document.getElementById('importFile');
+  if (!fileInput.files || !fileInput.files[0]) return;
+
+  const btn = document.getElementById('importSubmitBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Importing...';
+
+  const file = fileInput.files[0];
+  const reader = new FileReader();
+  reader.onload = async function(evt) {
+    try {
+      let items = [];
+      if (file.name.endsWith('.json')) {
+        items = JSON.parse(evt.target.result);
+      }
+      const res = await fetch('/api/admin/resources/import', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items })
+      });
+      const data = await res.json();
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-file-arrow-up"></i> Validate &amp; Import Data';
+
+      if (res.ok) {
+        window.showToast(`Imported ${data.importedCount} resources successfully!`, 'success');
+        setTimeout(() => window.location.reload(), 1000);
+      } else {
+        window.showToast(data.error || 'Import failed', 'error');
+      }
+    } catch (err) {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-file-arrow-up"></i> Validate &amp; Import Data';
+      window.showToast('Invalid file format: ' + err.message, 'error');
+    }
+  };
+  reader.readAsText(file);
+}
+</script>
+
+<%- include('partials/footer') %>

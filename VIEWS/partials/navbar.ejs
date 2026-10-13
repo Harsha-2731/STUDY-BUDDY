@@ -1,0 +1,104 @@
+<header class="top-navbar">
+  <div style="display: flex; align-items: center; gap: 1rem;">
+    <% if (typeof user !== 'undefined' && user) { %>
+      <button type="button" class="mobile-nav-toggle btn-icon" onclick="toggleSidebar()" aria-label="Toggle navigation">
+        <i class="fas fa-bars"></i>
+      </button>
+    <% } else { %>
+      <a href="/" class="navbar-brand">
+        <span class="brand-badge"><i class="fas fa-graduation-cap"></i></span>
+        <span>StudyBuddy</span>
+      </a>
+    <% } %>
+
+    <% if (typeof pageTitle !== 'undefined') { %>
+      <div style="display: none; @media(min-width: 768px){display: block;}">
+        <span style="font-size: 0.825rem; color: var(--text-muted); font-weight: 500;">Workspace /</span>
+        <span style="font-size: 0.875rem; color: var(--text-main); font-weight: 600;"><%= pageTitle %></span>
+      </div>
+    <% } %>
+  </div>
+
+  <% if (typeof user !== 'undefined' && user) { %>
+    <!-- Global Quick Search Bar -->
+    <form action="/resources" method="GET" style="flex: 1; max-width: 440px; margin: 0 1.5rem; display: none; @media(min-width: 768px){display: block;}" class="search-form-global">
+      <div style="position: relative;">
+        <i class="fas fa-search" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--text-light); font-size: 0.85rem;"></i>
+        <input type="text" name="search" class="form-control" placeholder="Search 1,350+ engineering notes, subjects, topics..." style="padding-left: 2.5rem; border-radius: var(--radius-full); font-size: 0.85rem; background-color: var(--bg-subtle);">
+      </div>
+    </form>
+  <% } %>
+
+  <div class="navbar-actions">
+    <!-- Theme Toggle Button -->
+    <button type="button" class="btn-icon theme-toggle-btn" onclick="toggleTheme()" title="Toggle Theme" aria-label="Toggle light or dark theme">
+      <i class="fas fa-moon"></i>
+    </button>
+
+    <% if (typeof user !== 'undefined' && user) { %>
+      <!-- Notifications Icon -->
+      <a href="/notifications" class="btn-icon" style="position: relative;" title="Notifications">
+        <i class="fas fa-bell"></i>
+        <% if (typeof unreadCount !== 'undefined' && unreadCount > 0) { %>
+          <span style="position: absolute; top: 4px; right: 4px; width: 8px; height: 8px; border-radius: 50%; background-color: var(--danger);"></span>
+        <% } %>
+      </a>
+
+      <!-- User Profile Dropdown -->
+      <div class="dropdown">
+        <button type="button" class="btn" data-dropdown-toggle="userNavDropdown" style="background: none; border: none; padding: 0.25rem; display: flex; align-items: center; gap: 0.65rem;">
+          <div class="user-avatar-sm" style="width: 36px; height: 36px;">
+            <%= user.userName ? user.userName.charAt(0).toUpperCase() : 'S' %>
+          </div>
+          <div style="text-align: left; line-height: 1.2; display: none; @media(min-width: 640px){display: block;}">
+            <div style="font-size: 0.85rem; font-weight: 600; color: var(--text-main);"><%= user.userName %></div>
+            <div style="font-size: 0.725rem; color: var(--text-muted); text-transform: uppercase;">
+              <%= user.academicBranch || 'CSE' %> &bull; <%= user.studentRole || 'student' %>
+            </div>
+          </div>
+          <i class="fas fa-chevron-down" style="font-size: 0.75rem; color: var(--text-light);"></i>
+        </button>
+
+        <div id="userNavDropdown" class="dropdown-menu" style="min-width: 220px;">
+          <div style="padding: 0.75rem 0.85rem; border-bottom: 1px solid var(--border-subtle);">
+            <div style="font-weight: 700; font-size: 0.9rem; color: var(--text-main);"><%= user.userName %></div>
+            <div style="font-size: 0.775rem; color: var(--text-muted);"><%= user.userEmail %></div>
+            <div style="margin-top: 0.35rem;">
+              <span class="badge <%= user.studentRole === 'admin' ? 'badge-primary' : 'badge-secondary' %>">
+                <i class="fas <%= user.studentRole === 'admin' ? 'fa-shield-halved' : 'fa-graduation-cap' %>"></i>
+                <%= user.studentRole === 'admin' ? 'Administrator' : 'Engineering Student' %>
+              </span>
+            </div>
+          </div>
+
+          <a href="/profile" class="dropdown-item">
+            <i class="fas fa-user-gear"></i> Profile & Settings
+          </a>
+          <a href="/library" class="dropdown-item">
+            <i class="fas fa-bookmark"></i> My Saved Resources
+          </a>
+          <a href="/planner" class="dropdown-item">
+            <i class="fas fa-clock"></i> Focus Timer & Tasks
+          </a>
+          
+          <% if (user.studentRole === 'admin') { %>
+            <div class="dropdown-divider"></div>
+            <a href="/admin" class="dropdown-item" style="color: var(--primary);">
+              <i class="fas fa-gauge-high"></i> Admin Portal
+            </a>
+          <% } %>
+
+          <div class="dropdown-divider"></div>
+          <a href="/logout" class="dropdown-item" style="color: var(--danger);">
+            <i class="fas fa-sign-out-alt"></i> Sign Out
+          </a>
+        </div>
+      </div>
+
+    <% } else { %>
+      <!-- Public Header Links -->
+      <a href="/login" class="btn btn-outline btn-sm">Log In</a>
+      <a href="/register" class="btn btn-primary btn-sm">Get Started</a>
+    <% } %>
+  </div>
+</header>

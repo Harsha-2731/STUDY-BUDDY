@@ -1,0 +1,38 @@
+<%- include('partials/head', { title: '404 — Page Not Found', bodyClass: 'public-layout' }) %>
+
+<header class="top-navbar" style="border-bottom: 1px solid var(--border-subtle);">
+  <a href="/" class="navbar-brand">
+    <span class="brand-badge"><i class="fas fa-graduation-cap"></i></span>
+    <span>StudyBuddy</span>
+  </a>
+
+  <div class="navbar-actions">
+    <button type="button" class="btn-icon theme-toggle-btn" onclick="toggleTheme()" title="Toggle Theme">
+      <i class="fas fa-moon"></i>
+    </button>
+    <a href="/home" class="btn btn-primary btn-sm">Go to Dashboard</a>
+  </div>
+</header>
+
+<main class="main-content" style="display: flex; align-items: center; justify-content: center; padding: 4rem 1.5rem; min-height: calc(100vh - var(--header-height));">
+  <div class="empty-state" style="max-width: 520px; width: 100%; padding: 3rem 2rem;">
+    <div class="empty-state-icon" style="width: 80px; height: 80px; font-size: 2.25rem; color: var(--primary); background: var(--primary-light);">
+      <i class="fas fa-compass-slash"></i>
+    </div>
+    <h1 style="font-size: 2.5rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.5rem;">404</h1>
+    <h2 class="empty-state-title" style="font-size: 1.35rem;"><%= typeof message !== 'undefined' ? message : 'Page Not Found' %></h2>
+    <p class="empty-state-desc">
+      The academic page or resource you are looking for may have been moved, renamed, or is currently unavailable.
+    </p>
+    <div style="display: flex; justify-content: center; gap: 0.75rem;">
+      <a href="/home" class="btn btn-primary">
+        <i class="fas fa-house"></i> Back to Dashboard
+      </a>
+      <a href="/resources" class="btn btn-secondary">
+        <i class="fas fa-compass"></i> Explore Notes
+      </a>
+    </div>
+  </div>
+</main>
+
+<%- include('partials/footer') %>

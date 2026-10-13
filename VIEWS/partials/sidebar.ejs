@@ -1,0 +1,92 @@
+<aside id="appSidebar" class="sidebar">
+  <div class="sidebar-header">
+    <a href="/home" class="navbar-brand">
+      <span class="brand-badge"><i class="fas fa-graduation-cap"></i></span>
+      <span>StudyBuddy</span>
+    </a>
+    <button type="button" class="btn-icon mobile-nav-toggle" onclick="toggleSidebar()" aria-label="Close sidebar">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section-title">Academic Workspace</div>
+    
+    <a href="/home" class="nav-link <%= typeof activeNav !== 'undefined' && activeNav === 'dashboard' ? 'active' : '' %>">
+      <i class="fas fa-chart-pie"></i>
+      <span>Overview</span>
+    </a>
+
+    <a href="/resources" class="nav-link <%= typeof activeNav !== 'undefined' && activeNav === 'resources' ? 'active' : '' %>">
+      <i class="fas fa-compass"></i>
+      <span>Explore Resources</span>
+    </a>
+
+    <a href="/library" class="nav-link <%= typeof activeNav !== 'undefined' && activeNav === 'library' ? 'active' : '' %>">
+      <i class="fas fa-bookmark"></i>
+      <span>My Library</span>
+    </a>
+
+    <a href="/subjects" class="nav-link <%= typeof activeNav !== 'undefined' && activeNav === 'subjects' ? 'active' : '' %>">
+      <i class="fas fa-book-open"></i>
+      <span>My Subjects</span>
+    </a>
+
+    <div class="nav-section-title">Productivity & Study</div>
+
+    <a href="/planner" class="nav-link <%= typeof activeNav !== 'undefined' && activeNav === 'planner' ? 'active' : '' %>">
+      <i class="fas fa-calendar-check"></i>
+      <span>Study Planner & Timer</span>
+    </a>
+
+    <a href="/upload" class="nav-link <%= typeof activeNav !== 'undefined' && activeNav === 'upload' ? 'active' : '' %>">
+      <i class="fas fa-cloud-arrow-up"></i>
+      <span>Upload Notes</span>
+    </a>
+
+    <a href="/model-papers" class="nav-link <%= typeof activeNav !== 'undefined' && activeNav === 'modelpapers' ? 'active' : '' %>">
+      <i class="fas fa-file-lines"></i>
+      <span>Model Papers</span>
+    </a>
+
+    <% if (typeof user !== 'undefined' && user && user.studentRole === 'admin') { %>
+      <div class="nav-section-title" style="color: var(--primary);">Administration</div>
+      
+      <a href="/admin" class="nav-link <%= typeof activeNav !== 'undefined' && activeNav === 'admin' ? 'active' : '' %>">
+        <i class="fas fa-shield-halved" style="color: var(--primary);"></i>
+        <span style="font-weight: 600;">Admin Dashboard</span>
+      </a>
+    <% } %>
+
+    <div class="nav-section-title">Account</div>
+
+    <a href="/profile" class="nav-link <%= typeof activeNav !== 'undefined' && activeNav === 'profile' ? 'active' : '' %>">
+      <i class="fas fa-user-gear"></i>
+      <span>Profile & Settings</span>
+    </a>
+
+    <a href="/notifications" class="nav-link <%= typeof activeNav !== 'undefined' && activeNav === 'notifications' ? 'active' : '' %>">
+      <i class="fas fa-bell"></i>
+      <span>Notifications</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="user-sidebar-card">
+      <div class="user-avatar-sm">
+        <%= typeof user !== 'undefined' && user && user.userName ? user.userName.charAt(0).toUpperCase() : 'U' %>
+      </div>
+      <div class="user-meta" style="flex: 1;">
+        <div class="user-meta-name"><%= typeof user !== 'undefined' && user ? user.userName : 'Student' %></div>
+        <div class="user-meta-role">
+          <%= typeof user !== 'undefined' && user ? (user.academicBranch || 'CSE') + ' • ' + (user.academicYear || '1st Year') : '' %>
+        </div>
+      </div>
+      <a href="/logout" class="btn-icon btn-sm" title="Sign out" style="color: var(--danger);">
+        <i class="fas fa-arrow-right-from-bracket"></i>
+      </a>
+    </div>
+  </div>
+</aside>
+
+<div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>

@@ -1,0 +1,129 @@
+<%- include('partials/head', { title: 'Profile & Settings — StudyBuddy', bodyClass: 'app-layout' }) %>
+
+<%- include('partials/sidebar', { activeNav: 'profile' }) %>
+
+<div class="main-content">
+  <%- include('partials/navbar', { pageTitle: 'Profile & Settings' }) %>
+
+  <main class="page-container">
+    <div style="max-width: 800px; margin: 0 auto;">
+      <div style="margin-bottom: 2rem;">
+        <h1 style="font-size: 1.85rem; font-weight: 800; color: var(--text-main); line-height: 1.2;">
+          Student Profile &amp; Settings
+        </h1>
+        <p style="font-size: 0.95rem; color: var(--text-muted); margin-top: 0.25rem;">
+          Manage your academic details, login credentials, and interface preferences.
+        </p>
+      </div>
+
+      <!-- User Info Header Card -->
+      <div class="card" style="padding: 1.5rem; margin-bottom: 2rem; display: flex; align-items: center; gap: 1.5rem;">
+        <div class="user-avatar-sm" style="width: 64px; height: 64px; font-size: 1.6rem;">
+          <%= user.userName ? user.userName.charAt(0).toUpperCase() : 'U' %>
+        </div>
+        <div>
+          <h2 style="font-size: 1.35rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.25rem;">
+            <%= user.userName %>
+          </h2>
+          <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+            <%= user.userEmail %> &bull; Joined <%= new Date(user.createdAt).toLocaleDateString() %>
+          </div>
+          <span class="badge <%= user.studentRole === 'admin' ? 'badge-primary' : 'badge-secondary' %>">
+            <i class="fas <%= user.studentRole === 'admin' ? 'fa-shield-halved' : 'fa-graduation-cap' %>"></i>
+            <%= user.studentRole === 'admin' ? 'System Administrator' : 'Engineering Student' %>
+          </span>
+        </div>
+      </div>
+
+      <!-- Academic Profile Form Card -->
+      <div class="card" style="padding: 2rem; margin-bottom: 2rem;">
+        <div class="card-header" style="padding: 0 0 1rem; margin-bottom: 1.5rem;">
+          <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-main);">Academic Profile</h3>
+        </div>
+
+        <form action="/api/user/profile" method="POST" id="profileForm">
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input type="text" name="userName" class="form-control" value="<%= user.userName %>" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Engineering Branch</label>
+            <select name="academicBranch" class="form-select">
+              <% const branches = ['CSE', 'AIML', 'AIDS', 'IT', 'CSIT', 'CIC', 'ECE', 'EEE', 'MECH', 'CIVIL']; %>
+              <% branches.forEach(b => { %>
+                <option value="<%= b %>" <%= (user.academicBranch === b) ? 'selected' : '' %>><%= b %></option>
+              <% }); %>
+            </select>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Current Academic Year</label>
+              <select name="academicYear" class="form-select">
+                <option value="1st Year" <%= (user.academicYear === '1st Year') ? 'selected' : '' %>>1st Year</option>
+                <option value="2nd Year" <%= (user.academicYear === '2nd Year') ? 'selected' : '' %>>2nd Year</option>
+                <option value="3rd Year" <%= (user.academicYear === '3rd Year') ? 'selected' : '' %>>3rd Year</option>
+                <option value="4th Year" <%= (user.academicYear === '4th Year') ? 'selected' : '' %>>4th Year</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Current Semester</label>
+              <select name="academicSemester" class="form-select">
+                <option value="1st sem" <%= (user.academicSemester === '1st sem') ? 'selected' : '' %>>1st Semester</option>
+                <option value="2nd sem" <%= (user.academicSemester === '2nd sem') ? 'selected' : '' %>>2nd Semester</option>
+              </select>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="margin-top: 0.5rem;">
+            <i class="fas fa-save"></i> Save Academic Profile
+          </button>
+        </form>
+      </div>
+
+      <!-- Security: Password Change Card -->
+      <div class="card" style="padding: 2rem;">
+        <div class="card-header" style="padding: 0 0 1rem; margin-bottom: 1.5rem;">
+          <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-main);">Change Password</h3>
+        </div>
+
+        <form action="/api/user/change-password" method="POST" id="passwordForm">
+          <div class="form-group">
+            <label class="form-label">Current Password</label>
+            <input type="password" name="currentPassword" class="form-control" required autocomplete="current-password">
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label">New Password</label>
+              <input type="password" id="newPassword" name="newPassword" class="form-control" required minlength="6" autocomplete="new-password">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Confirm New Password</label>
+              <input type="password" id="confirmNewPassword" name="confirmNewPassword" class="form-control" required minlength="6" autocomplete="new-password">
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-secondary">
+            <i class="fas fa-key"></i> Update Password
+          </button>
+        </form>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+document.getElementById('passwordForm').addEventListener('submit', function(e) {
+  const p1 = document.getElementById('newPassword').value;
+  const p2 = document.getElementById('confirmNewPassword').value;
+  if (p1 !== p2) {
+    e.preventDefault();
+    window.showToast('New passwords do not match!', 'error');
+  }
+});
+</script>
+
+<%- include('partials/footer') %>

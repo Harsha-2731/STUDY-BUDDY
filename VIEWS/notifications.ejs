@@ -1,0 +1,95 @@
+<%- include('partials/head', { title: 'Notifications — StudyBuddy', bodyClass: 'app-layout' }) %>
+
+<%- include('partials/sidebar', { activeNav: 'notifications' }) %>
+
+<div class="main-content">
+  <%- include('partials/navbar', { pageTitle: 'Notifications' }) %>
+
+  <main class="page-container">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 2rem;">
+      <div>
+        <h1 style="font-size: 1.85rem; font-weight: 800; color: var(--text-main); line-height: 1.2;">
+          Notifications Center
+        </h1>
+        <p style="font-size: 0.95rem; color: var(--text-muted); margin-top: 0.25rem;">
+          Stay updated on your study tasks, syllabus updates, and academic materials.
+        </p>
+      </div>
+
+      <% if (notifications && notifications.length > 0) { %>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="markAllRead()">
+          <i class="fas fa-check-double"></i> Mark All as Read
+        </button>
+      <% } %>
+    </div>
+
+    <% if (notifications && notifications.length > 0) { %>
+      <div class="card">
+        <div style="display: flex; flex-direction: column;">
+          <% notifications.forEach((n, idx) => { %>
+            <div id="notif-<%= n._id %>" style="display: flex; align-items: flex-start; justify-content: space-between; padding: 1.25rem; border-bottom: 1px solid var(--border-subtle); background-color: <%= n.read ? 'var(--bg-surface)' : 'var(--bg-subtle)' %>; gap: 1rem;">
+              <div style="display: flex; align-items: flex-start; gap: 1rem;">
+                <div style="width: 40px; height: 40px; border-radius: var(--radius-md); background: <%= n.type === 'success' ? 'var(--success-bg)' : (n.type === 'warning' ? 'var(--warning-bg)' : 'var(--primary-light)') %>; color: <%= n.type === 'success' ? 'var(--success)' : (n.type === 'warning' ? 'var(--warning)' : 'var(--primary)') %>; display: flex; align-items: center; justify-content: center; font-size: 1.15rem; flex-shrink: 0;">
+                  <i class="fas <%= n.type === 'success' ? 'fa-circle-check' : (n.type === 'task' ? 'fa-calendar-check' : 'fa-bell') %>"></i>
+                </div>
+                <div>
+                  <div style="font-weight: 700; font-size: 0.95rem; color: var(--text-main); margin-bottom: 0.2rem;">
+                    <%= n.title %>
+                    <% if (!n.read) { %>
+                      <span class="badge badge-primary" style="margin-left: 0.5rem; font-size: 0.65rem;">New</span>
+                    <% } %>
+                  </div>
+                  <p style="font-size: 0.875rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 0.35rem;">
+                    <%= n.message %>
+                  </p>
+                  <div style="font-size: 0.75rem; color: var(--text-light);">
+                    <i class="far fa-clock"></i> <%= new Date(n.createdAt).toLocaleString() %>
+                  </div>
+                </div>
+              </div>
+
+              <% if (!n.read) { %>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="markOneRead('<%= n._id %>')">
+                  Mark Read
+                </button>
+              <% } %>
+            </div>
+          <% }); %>
+        </div>
+      </div>
+    <% } else { %>
+      <div class="empty-state">
+        <div class="empty-state-icon"><i class="fas fa-bell-slash"></i></div>
+        <h3 class="empty-state-title">No notifications right now</h3>
+        <p class="empty-state-desc">You are all caught up! As you plan study sessions and explore resources, updates will appear here.</p>
+        <a href="/home" class="btn btn-primary">Return to Dashboard</a>
+      </div>
+    <% } %>
+  </main>
+</div>
+
+<script>
+async function markOneRead(id) {
+  try {
+    const res = await fetch(`/api/notifications/${id}/read`, { method: 'PATCH' });
+    if (res.ok) {
+      window.location.reload();
+    }
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+async function markAllRead() {
+  try {
+    const res = await fetch('/api/notifications/read-all', { method: 'PATCH' });
+    if (res.ok) {
+      window.location.reload();
+    }
+  } catch (e) {
+    console.error(e);
+  }
+}
+</script>
+
+<%- include('partials/footer') %>

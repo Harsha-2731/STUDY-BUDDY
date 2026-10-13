@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>StudyBuddy | Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+  :root {
+    --primary: #6366f1;
+    --primary-light: #818cf8;
+    --primary-dark: #4f46e5;
+    --secondary: #f59e0b;
+    --secondary-light: #fbbf24;
+    --dark: #1e293b;
+    --darker: #0f172a;
+    --light: #f8fafc;
+    --lighter: #ffffff;
+    --gray: #94a3b8;
+    --gray-light: #e2e8f0;
+    --success: #10b981;
+    --danger: #ef4444;
+    --glass: rgba(255, 255, 255, 0.15);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --card-bg: rgba(255, 255, 255, 0.95);
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+  }
+
+  body {
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    color: var(--dark);
+    min-height: 100vh;
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem 2.5%;
+  }
+
+  /* Animated Background Elements */
+  .bg-circle {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.15;
+    z-index: -1;
+  }
+  
+  .circle-1 {
+    width: 300px;
+    height: 300px;
+    background: var(--primary);
+    top: 10%;
+    left: 5%;
+    animation: float 8s ease-in-out infinite;
+  }
+  
+  .circle-2 {
+    width: 400px;
+    height: 400px;
+    background: var(--secondary);
+    bottom: 10%;
+    right: 5%;
+    animation: float 10s ease-in-out infinite 2s;
+  }
+
+  /* Glassmorphism Header with Parallax Effect */
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 3rem;
+    padding: 1.5rem 2rem;
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--glass-border);
+    animation: fadeInDown 0.6s ease-out;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+  }
+
+  .dashboard-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, 
+      rgba(99, 102, 241, 0.05) 0%, 
+      rgba(245, 158, 11, 0.05) 100%);
+    z-index: -1;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+  }
+
+  .header-icon {
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.3s ease;
+  }
+
+  .header-icon:hover {
+    transform: rotate(15deg) scale(1.1);
+  }
+
+  .header-text h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--darker);
+    line-height: 1.3;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+  }
+
+  .user-info {
+    font-size: 0.95rem;
+    color: var(--gray);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.3rem;
+  }
+
+  .logout-btn {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    border: none;
+    padding: 0.8rem 1.8rem;
+    border-radius: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .logout-btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--primary-light), var(--primary));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .logout-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .logout-btn:hover::after {
+    opacity: 1;
+  }
+
+  .logout-btn i, .logout-btn span {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Stats Cards with Hover Animation */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.8rem;
+    margin-bottom: 3.5rem;
+  }
+
+  .stat-card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 1.8rem;
+    box-shadow: var(--shadow);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(5px);
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .stat-card.animate {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(to bottom, var(--primary), var(--secondary));
+    transition: width 0.4s ease;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .stat-card:hover::before {
+    width: 8px;
+  }
+
+  .stat-icon {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.3s ease;
+  }
+
+  .stat-card:hover .stat-icon {
+    transform: rotate(15deg) scale(1.1);
+  }
+
+  .stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--darker);
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .stat-label {
+    font-size: 0.95rem;
+    color: var(--gray);
+    font-weight: 500;
+  }
+
+  /* Progress Ring for Stats */
+  .progress-ring {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 60px;
+    height: 60px;
+  }
+
+  .progress-ring__circle {
+    transition: stroke-dashoffset 0.8s ease;
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+    stroke: var(--primary-light);
+    stroke-width: 4;
+    stroke-dasharray: 157;
+    stroke-dashoffset: 157;
+    fill: none;
+  }
+
+  .stat-card:hover .progress-ring__circle {
+    stroke-dashoffset: 78; /* 50% progress */
+  }
+
+  /* Subjects Section */
+  .subjects-section {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: var(--shadow);
+    margin-bottom: 3rem;
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(5px);
+    animation: fadeIn 0.8s ease-out;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .subjects-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, rgba(99, 102, 241, 0) 70%);
+    z-index: 0;
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .section-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--darker);
+    position: relative;
+    padding-bottom: 0.5rem;
+  }
+
+  .section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 50px;
+    height: 3px;
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+    border-radius: 3px;
+    transition: width 0.4s ease;
+  }
+
+  .section-header:hover .section-title::after {
+    width: 80px;
+  }
+
+  .section-link {
+    color: var(--primary);
+    font-weight: 600;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    position: relative;
+    padding: 0.5rem 0;
+  }
+
+  .section-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--primary);
+    transition: width 0.3s ease;
+  }
+
+  .section-link:hover {
+    color: var(--primary-dark);
+    transform: translateX(5px);
+  }
+
+  .section-link:hover::after {
+    width: 100%;
+  }
+
+  .branches-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.8rem;
+  }
+
+  .branch-card {
+    background: var(--lighter);
+    border-radius: 14px;
+    padding: 1.8rem;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+    border: 1px solid var(--gray-light);
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(20px);
+    z-index: 1;
+  }
+
+  .branch-card.animate {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .branch-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+    transition: height 0.3s ease;
+  }
+
+  .branch-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .branch-card:hover::before {
+    height: 6px;
+  }
+
+  .branch-card h3 {
+    font-weight: 700;
+    color: var(--darker);
+    margin-bottom: 1.2rem;
+    font-size: 1.3rem;
+    transition: color 0.3s ease;
+  }
+
+  .branch-card:hover h3 {
+    color: var(--primary);
+  }
+
+  .year-container {
+    margin-bottom: 1.5rem;
+  }
+
+  .year-title {
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .semester-list {
+    margin-left: 1.5rem;
+  }
+
+  .semester-item {
+    margin-bottom: 0.8rem;
+  }
+
+  .semester-title {
+    font-weight: 500;
+    color: var(--dark);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .subjects-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-left: 1.5rem;
+    text-decoration: none;
+  }
+
+  .subject-tag {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    background: rgba(99, 102, 241, 0.1);
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--primary);
+    transition: all 0.3s ease;
+  }
+
+  .subject-tag:hover {
+    background: rgba(99, 102, 241, 0.2);
+    transform: translateY(-2px);
+  }
+
+  /* Empty State with Animation */
+  .empty-state {
+    text-align: center;
+    padding: 4rem 0;
+    color: var(--gray);
+    animation: fadeIn 0.8s ease-out;
+    position: relative;
+    z-index: 1;
+  }
+
+  .empty-icon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+    color: var(--gray-light);
+    animation: pulse 2s infinite;
+  }
+
+  .empty-text {
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+    color: var(--dark);
+  }
+
+  /* Study Tip of the Day */
+  .study-tip {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 3rem;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(5px);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .study-tip::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, rgba(245, 158, 11, 0.05) 0%, rgba(99, 102, 241, 0.05) 100%);
+    z-index: 0;
+  }
+
+  .study-tip-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  .study-tip h3 {
+    font-size: 1.2rem;
+    color: var(--darker);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .study-tip h3 i {
+    color: var(--secondary);
+  }
+
+  .study-tip p {
+    color: var(--dark);
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  /* Floating Action Buttons */
+  .action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 4rem;
+    flex-wrap: wrap;
+  }
+
+  .action-btn {
+    padding: 1rem 2.2rem;
+    border-radius: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    z-index: 1;
+  }
+
+  .primary-btn {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+  }
+
+  .primary-btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--primary-light), var(--primary));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+  }
+
+  .primary-btn:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .primary-btn:hover::after {
+    opacity: 1;
+  }
+
+  .primary-btn i, .primary-btn span {
+    position: relative;
+    z-index: 1;
+  }
+
+  .secondary-btn {
+    background: var(--lighter);
+    color: var(--primary);
+    border: 2px solid var(--primary);
+  }
+
+  .secondary-btn:hover {
+    background: rgba(99, 102, 241, 0.05);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+  }
+
+  /* Ripple Effect */
+  .ripple-effect {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.7);
+    transform: scale(0);
+    animation: ripple 0.6s linear;
+    pointer-events: none;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 1024px) {
+    .container {
+      padding: 1.5rem 3%;
+    }
+    
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .branches-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .dashboard-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1.5rem;
+      padding: 1.5rem;
+    }
+    
+    .header-left {
+      width: 100%;
+      justify-content: space-between;
+    }
+    
+    .stats-grid,
+    .branches-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .action-buttons {
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .action-btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .subjects-section {
+      padding: 1.5rem;
+    }
+    
+    .section-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .header-text h1 {
+      font-size: 1.5rem;
+    }
+  }
+
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+  }
+
+  @keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+    100% { transform: translateY(0px); }
+  }
+
+  @keyframes ripple {
+    to {
+      transform: scale(4);
+      opacity: 0;
+    }
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--gray-light);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-dark);
+  }
+  .user-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: 15px;
+  }
+
+  .avatar-circle {
+    width: 40px;
+    height: 40px;
+    background-color: #5e72e4;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 1rem;
+  }
+
+  .user-details {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .user-name, .user-email {
+    color: #fff;
+    font-size: 0.9rem;
+  }
+
+</style>
+  
+</head>
+<body>
+  <!-- Animated Background Elements -->
+  <div class="bg-circle circle-1"></div>
+  <div class="bg-circle circle-2"></div>
+
+  <div class="container">
+    <!-- Glassmorphic Header -->
+    <header class="dashboard-header">
+      <div class="header-left">
+        <div class="header-icon">
+          <i class="fas fa-user-graduate"></i>
+        </div>
+        <div class="header-text">
+          <h1>Welcome back, <%= user.userName %> <span class="welcome-emoji">👋</span></h1>
+          <div class="user-info">
+            <i class="fas fa-calendar-alt"></i>
+            <span><%= new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }) %></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ✅ USER DETAILS & AVATAR -->
+      <div id="user-info" class="user-meta">
+        <div id="user-avatar" class="avatar-circle"></div>
+        <div class="user-details">
+          <div id="user-name" class="user-name"></div>
+          <div id="user-email" class="user-email"></div>
+        </div>
+      </div>
+
+      <form action="/logout" method="POST">
+        <button type="submit" class="logout-btn">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Logout</span>
+        </button>
+      </form>
+    </header>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card" data-delay="0">
+        <div class="stat-icon"><i class="fas fa-book-open"></i></div>
+        <div class="stat-value"><%= stats.subjects || 0 %></div>
+        <div class="stat-label">Subjects Enrolled</div>
+        <svg class="progress-ring" viewBox="0 0 60 60">
+          <circle class="progress-ring__circle" stroke-width="4" r="25" cx="30" cy="30"></circle>
+        </svg>
+      </div>
+      <div class="stat-card" data-delay="100">
+        <div class="stat-icon"><i class="fas fa-file-alt"></i></div>
+        <div class="stat-value"><%= stats.notes || 0 %></div>
+        <div class="stat-label">Notes Uploaded</div>
+        <svg class="progress-ring" viewBox="0 0 60 60">
+          <circle class="progress-ring__circle" stroke-width="4" r="25" cx="30" cy="30"></circle>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Study Tip of the Day -->
+    <div class="study-tip">
+      <div class="study-tip-content">
+        <h3><i class="fas fa-lightbulb"></i> Study Tip of the Day</h3>
+        <p>The Pomodoro Technique: Study for 25 minutes, then take a 5-minute break. After four cycles, take a longer 15-30 minute break. This method helps maintain focus and prevents burnout.</p>
+      </div>
+    </div>
+
+    <!-- Subjects Section -->
+    <section class="subjects-section">
+      <div class="section-header">
+        <h2 class="section-title">Your Subjects</h2>
+        <a href="/subjects" class="section-link">
+          <span>View All</span>
+          <i class="fas fa-arrow-right"></i>
+        </a>
+      </div>
+
+      <div class="branches-grid">
+        <!-- First Year Card -->
+        <div class="branch-card" data-delay="0">
+          <h3>First Year</h3>
+          
+          <div class="year-container">
+            <h4 class="year-title"><i class="fas fa-calendar-alt"></i> Semester 1</h4>
+            <div class="subjects-list">
+             <% 
+                const subjects = {
+                  "CHEMISTRY": "https://drive.google.com/drive/folders/1x8aqv1rAv9wToz8aK-okhB9a2EtFxWzh",
+                  "BCME": "https://drive.google.com/drive/folders/1akjLn7bGY2TBn0FwgTrRp0sIo8hH9DL3",
+                  "CP": "https://drive.google.com/drive/folders/1I84yss-R6H1yycevJs4IakOOvJj06tC7",
+                  "CP LAB": "https://drive.google.com/drive/folders/1I84yss-R6H1yycevJs4IakOOvJj06tC7"
+                };
+                 for (let subject in subjects) { 
+              %>
+                <a href="<%= subjects[subject] %>" target="_blank" class="subject-tag"><%= subject %></a>
+              <% } %>
+            </div>
+
+          </div>
+          
+          <div class="year-container">
+              <h4 class="year-title"><i class="fas fa-calendar-alt"></i> Semester 2</h4>
+              <div class="subjects-list">
+                <%
+                  const semester2Subjects = {
+                    "PHYSICS": "https://drive.google.com/drive/folders/14LG1AYcB7h5TxOPFKjhmyrUGhRAAhK1H",
+                    "BEEE": "https://drive.google.com/drive/folders/1r4JVeKXn1CRDpCTdMd7p33D1l8Gzc6S0",
+                    "DS": "https://drive.google.com/drive/folders/1rRS0Je2Hxj5WJOkRlCOFGOdYTuumrmZj",
+                    "DS LAB": "https://drive.google.com/drive/folders/1rRS0Je2Hxj5WJOkRlCOFGOdYTuumrmZj"
+                  };
+
+                  for (let subject in semester2Subjects) {
+                %>
+                  <a href="<%= semester2Subjects[subject] %>" target="_blank" class="subject-tag"><%= subject %></a>
+                <% } %>
+              </div>
+          </div>
+        </div>
+
+
+        <!-- CSE Card -->
+        <div class="branch-card" data-delay="100">
+          <h3>Computer Science (CSE)</h3>
+          
+          <div class="year-container">
+            <h4 class="year-title"><i class="fas fa-calendar-alt"></i> 2nd Year</h4>
+            
+            <div class="semester-list">
+              <div class="semester-item">
+                <h5 class="semester-title"><i class="fas fa-book"></i> Semester 1</h5>
+                <div class="subjects-list">
+                  <% ["DSA", "OOP", "DBMS", "COA", "DMS"].forEach(subject => { %>
+                    <span class="subject-tag"><%= subject %></span>
+                  <% }) %>
+                </div>
+              </div>
+              
+              <div class="semester-item">
+                <h5 class="semester-title"><i class="fas fa-book"></i> Semester 2</h5>
+                <div class="subjects-list">
+                  <% ["OS", "CN", "SE", "TOC", "DAA"].forEach(subject => { %>
+                    <span class="subject-tag"><%= subject %></span>
+                  <% }) %>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="year-container">
+            <h4 class="year-title"><i class="fas fa-calendar-alt"></i> 3rd Year</h4>
+            
+            <div class="semester-list">
+              <div class="semester-item">
+                <h5 class="semester-title"><i class="fas fa-book"></i> Semester 1</h5>
+                <div class="subjects-list">
+                  <% ["ML", "CD", "CC", "IOT", "AI"].forEach(subject => { %>
+                    <span class="subject-tag"><%= subject %></span>
+                  <% }) %>
+                </div>
+              </div>
+              
+              <div class="semester-item">
+                <h5 class="semester-title"><i class="fas fa-book"></i> Semester 2</h5>
+                <div class="subjects-list">
+                  <% ["BD", "NLP", "IS", "CG", "SPM"].forEach(subject => { %>
+                    <span class="subject-tag"><%= subject %></span>
+                  <% }) %>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="year-container">
+            <h4 class="year-title"><i class="fas fa-calendar-alt"></i> 4th Year</h4>
+            
+            <div class="semester-list">
+              <div class="semester-item">
+                <h5 class="semester-title"><i class="fas fa-book"></i> Semester 1</h5>
+                <div class="subjects-list">
+                  <% ["BC", "DL", "ES", "PP", "DA"].forEach(subject => { %>
+                    <span class="subject-tag"><%= subject %></span>
+                  <% }) %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AIML Card -->
+        <div class="branch-card" data-delay="200">
+          <h3>AI & Machine Learning (AIML)</h3>
+          
+          <div class="year-container">
+            <h4 class="year-title"><i class="fas fa-calendar-alt"></i> 2nd Year</h4>
+            
+            <div class="semester-list">
+              <div class="semester-item">
+                <h5 class="semester-title"><i class="fas fa-book"></i> Semester 1</h5>
+                <div class="subjects-list">
+                  <% ["DSA", "OOP", "DBMS", "COA", "DMS"].forEach(subject => { %>
+                    <span class="subject-tag"><%= subject %></span>
+                  <% }) %>
+                </div>
+              </div>
+              
+              <div class="semester-item">
+                <h5 class="semester-title"><i class="fas fa-book"></i> Semester 2</h5>
+                <div class="subjects-list">
+                  <% ["OS", "CN", "SE", "TOC", "DAA"].forEach(subject => { %>
+                    <span class="subject-tag"><%= subject %></span>
+                  <% }) %>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="year-container">
+            <h4 class="year-title"><i class="fas fa-calendar-alt"></i> 3rd Year</h4>
+            
+            <div class="semester-list">
+              <div class="semester-item">
+                <h5 class="semester-title"><i class="fas fa-book"></i> Semester 1</h5>
+                <div class="subjects-list">
+                  <% ["ML", "DL", "AI", "IOT", "CV"].forEach(subject => { %>
+                    <span class="subject-tag"><%= subject %></span>
+                  <% }) %>
+                </div>
+              </div>
+              
+              <div class="semester-item">
+                <h5 class="semester-title"><i class="fas fa-book"></i> Semester 2</h5>
+                <div class="subjects-list">
+                  <% ["NLP", "BD", "IS", "CG", "SPM"].forEach(subject => { %>
+                    <span class="subject-tag"><%= subject %></span>
+                  <% }) %>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="year-container">
+            <h4 class="year-title"><i class="fas fa-calendar-alt"></i> 4th Year</h4>
+            
+            <div class="semester-list">
+              <div class="semester-item">
+                <h5 class="semester-title"><i class="fas fa-book"></i> Semester 1</h5>
+                <div class="subjects-list">
+                  <% ["BC", "RL", "ES", "PP", "DA"].forEach(subject => { %>
+                    <span class="subject-tag"><%= subject %></span>
+                  <% }) %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AIDS Card -->
+        <div class="branch-card" data-delay="300">
+          <h3>AI & Data Science (AIDS)</h3>
+          
+          <div class="year-container">
+            <h4 class="year-title"><i class="fas fa-calendar-alt"></i> 2nd Year</h4>
+            
+            <div class="semester-list">
+              <div class="semester-item">
+                <h5 class="semester-title"><i class="fas fa-book"></i> Semester 1</h5>
+                <div class="subjects-list">
+                  <% ["DSA", "OOP", "DBMS", "COA", "DMS"].forEach(subject => { %>
+                    <span class="subject-tag"><%= subject %></span>
+                  <% }) %>
+                </div>
+              </div>
+              
+              <div class="semester-item">
+                <h5 class="semester-title"><i class="fas fa-book"></i> Semester 1</h5>
+                <div class="subjects-list">
+                  <% ["ML", "BD", "AI", "IOT", "DA"].forEach(subject => { %>
+                    <span class="subject-tag"><%= subject %></span>
+                  <% }) %>
+                </div>
+              </div>
+              
+              <div class="semester-item">
+                <h5 class="semester-title"><i class="fas fa-book"></i> Semester 2</h5>
+                <div class="subjects-list">
+                  <% ["NLP", "DL", "IS", "CG", "SPM"].forEach(subject => { %>
+                    <span class="subject-tag"><%= subject %></span>
+                  <% }) %>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="year-container">
+            <h4 class="year-title"><i class="fas fa-calendar-alt"></i> 4th Year</h4>
+            
+            <div class="semester-list">
+              <div class="semester-item">
+                <h5 class="semester-title"><i class="fas fa-book"></i> Semester 1</h5>
+                <div class="subjects-list">
+                  <% ["BC", "RL", "ES", "PP", "CV"].forEach(subject => { %>
+                    <span class="subject-tag"><%= subject %></span>
+                  <% }) %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <a href="/upload" class="action-btn primary-btn">
+        <i class="fas fa-book"></i>
+        <span>View My Uploads</span>
+      </a>
+      <a href="/upload" class="action-btn secondary-btn">
+        <i class="fas fa-cloud-upload-alt"></i>
+        <span>Upload New Notes</span>
+      </a>
+    </div>
+  </div>
+
+  <script>
+    // Animation trigger for stat and branch cards
+    document.addEventListener('DOMContentLoaded', function() {
+      const statCards = document.querySelectorAll('.stat-card');
+      const branchCards = document.querySelectorAll('.branch-card');
+      
+      // Animate stat cards with delay
+      statCards.forEach(card => {
+        const delay = card.getAttribute('data-delay') || 0;
+        setTimeout(() => {
+          card.classList.add('animate');
+        }, delay);
+      });
+      
+      // Animate branch cards with delay
+      branchCards.forEach(card => {
+        const delay = card.getAttribute('data-delay') || 0;
+        setTimeout(() => {
+          card.classList.add('animate');
+        }, Number(delay) + 200); // Additional delay for branch cards
+      });
+
+      // Ripple effect for buttons
+      const buttons = document.querySelectorAll('.logout-btn, .action-btn');
+      buttons.forEach(button => {
+        button.addEventListener('click', function(e) {
+          const rect = this.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          
+          const ripple = document.createElement('span');
+          ripple.className = 'ripple-effect';
+          ripple.style.left = `${x}px`;
+          ripple.style.top = `${y}px`;
+          
+          this.appendChild(ripple);
+          
+          setTimeout(() => {
+            ripple.remove();
+          }, 600);
+        });
+      });
+
+      // Set user avatar and details
+      const userAvatar = document.getElementById('user-avatar');
+      const userName = document.getElementById('user-name');
+      const userEmail = document.getElementById('user-email');
+      
+      // Get first letter of username for avatar
+      const username = '<%= user.userName %>';
+      userAvatar.textContent = username.charAt(0).toUpperCase();
+      
+      // Set user details
+      userName.textContent = username;
+      userEmail.textContent = '<%= user.email %>';
+    });
+  </script>
+</body>
+</html>

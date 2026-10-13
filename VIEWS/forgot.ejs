@@ -1,0 +1,72 @@
+<%- include('partials/head', { title: 'Recover Password — StudyBuddy', bodyClass: 'public-layout' }) %>
+
+<header class="top-navbar" style="border-bottom: 1px solid var(--border-subtle);">
+  <a href="/" class="navbar-brand">
+    <span class="brand-badge"><i class="fas fa-graduation-cap"></i></span>
+    <span>StudyBuddy</span>
+  </a>
+
+  <div class="navbar-actions">
+    <button type="button" class="btn-icon theme-toggle-btn" onclick="toggleTheme()" title="Toggle Theme">
+      <i class="fas fa-moon"></i>
+    </button>
+    <a href="/login" class="btn btn-outline btn-sm">Back to Login</a>
+  </div>
+</header>
+
+<main class="main-content" style="display: flex; align-items: center; justify-content: center; padding: 3rem 1.5rem; min-height: calc(100vh - var(--header-height)); background: radial-gradient(circle at center, var(--primary-light) 0%, transparent 70%);">
+  <div class="card" style="max-width: 440px; width: 100%; padding: 2.25rem; box-shadow: var(--shadow-xl); border-radius: var(--radius-xl);">
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <span class="brand-badge" style="width: 48px; height: 48px; font-size: 1.35rem; margin-bottom: 1rem;"><i class="fas fa-key"></i></span>
+      <h2 style="font-size: 1.75rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.35rem;">Forgot Password?</h2>
+      <p style="font-size: 0.9rem; color: var(--text-muted);">Enter your registered student email to receive a password reset token.</p>
+    </div>
+
+    <% if (typeof error !== 'undefined' && error) { %>
+      <div style="background-color: var(--danger-bg); border-left: 4px solid var(--danger); padding: 0.85rem 1rem; border-radius: var(--radius-sm); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.65rem; color: var(--danger-text); font-size: 0.875rem;">
+        <i class="fas fa-exclamation-circle"></i>
+        <span><%= error %></span>
+      </div>
+    <% } %>
+
+    <% if (typeof message !== 'undefined' && message) { %>
+      <div style="background-color: var(--success-bg); border-left: 4px solid var(--success); padding: 0.85rem 1rem; border-radius: var(--radius-sm); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.65rem; color: var(--success-text); font-size: 0.875rem;">
+        <i class="fas fa-check-circle"></i>
+        <span><%= message %></span>
+      </div>
+    <% } %>
+
+    <% if (typeof devResetLink !== 'undefined' && devResetLink) { %>
+      <div style="background-color: var(--info-bg); border-left: 4px solid var(--info); padding: 1rem; border-radius: var(--radius-sm); margin-bottom: 1.5rem;">
+        <div style="font-size: 0.8rem; font-weight: 700; color: var(--info-text); text-transform: uppercase; margin-bottom: 0.25rem;">
+          <i class="fas fa-terminal"></i> Development Mode Link
+        </div>
+        <p style="font-size: 0.825rem; color: var(--text-main); margin-bottom: 0.75rem;">
+          SMTP email was skipped or in local testing. You can reset immediately via:
+        </p>
+        <a href="<%= devResetLink %>" class="btn btn-primary btn-sm" style="width: 100%;">
+          <i class="fas fa-unlock"></i> Open Password Reset Page
+        </a>
+      </div>
+    <% } %>
+
+    <form action="/forgot" method="POST">
+      <div class="form-group">
+        <label class="form-label" for="userEmail">Registered Email</label>
+        <input type="email" id="userEmail" name="userEmail" class="form-control" placeholder="student@studybuddy.edu" required autofocus>
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.75rem;">
+        <i class="fas fa-paper-plane"></i> Send Reset Instructions
+      </button>
+    </form>
+
+    <div style="text-align: center; margin-top: 1.75rem; font-size: 0.875rem;">
+      <a href="/login" style="color: var(--text-muted); font-weight: 500;">
+        <i class="fas fa-arrow-left"></i> Return to login
+      </a>
+    </div>
+  </div>
+</main>
+
+<%- include('partials/footer') %>

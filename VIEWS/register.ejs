@@ -1,0 +1,111 @@
+<%- include('partials/head', { title: 'Create Student Account — StudyBuddy', bodyClass: 'public-layout' }) %>
+
+<header class="top-navbar" style="border-bottom: 1px solid var(--border-subtle);">
+  <a href="/" class="navbar-brand">
+    <span class="brand-badge"><i class="fas fa-graduation-cap"></i></span>
+    <span>StudyBuddy</span>
+  </a>
+
+  <div class="navbar-actions">
+    <button type="button" class="btn-icon theme-toggle-btn" onclick="toggleTheme()" title="Toggle Theme">
+      <i class="fas fa-moon"></i>
+    </button>
+    <a href="/login" class="btn btn-outline btn-sm">Already Registered? Log In</a>
+  </div>
+</header>
+
+<main class="main-content" style="display: flex; align-items: center; justify-content: center; padding: 3rem 1.5rem; min-height: calc(100vh - var(--header-height)); background: radial-gradient(circle at center, var(--primary-light) 0%, transparent 70%);">
+  <div class="card" style="max-width: 480px; width: 100%; padding: 2.25rem; box-shadow: var(--shadow-xl); border-radius: var(--radius-xl);">
+    <div style="text-align: center; margin-bottom: 1.75rem;">
+      <span class="brand-badge" style="width: 48px; height: 48px; font-size: 1.35rem; margin-bottom: 1rem;"><i class="fas fa-user-plus"></i></span>
+      <h2 style="font-size: 1.75rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.35rem;">Join StudyBuddy</h2>
+      <p style="font-size: 0.9rem; color: var(--text-muted);">Start organizing your engineering materials today.</p>
+    </div>
+
+    <% if (typeof error !== 'undefined' && error) { %>
+      <div style="background-color: var(--danger-bg); border-left: 4px solid var(--danger); padding: 0.85rem 1rem; border-radius: var(--radius-sm); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.65rem; color: var(--danger-text); font-size: 0.875rem;">
+        <i class="fas fa-exclamation-circle"></i>
+        <span><%= error %></span>
+      </div>
+    <% } %>
+
+    <form action="/register" method="POST" id="regForm">
+      <div class="form-group">
+        <label class="form-label" for="userName">Full Name</label>
+        <input type="text" id="userName" name="userName" class="form-control" placeholder="HARSHA VARDHAN" required autofocus>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="userEmail">Student Email Address</label>
+        <input type="email" id="userEmail" name="userEmail" class="form-control" placeholder="student@example.edu" required autocomplete="email">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="academicBranch">Engineering Branch</label>
+        <select id="academicBranch" name="academicBranch" class="form-select">
+          <option value="CSE">Computer Science & Engineering (CSE)</option>
+          <option value="AIML">Artificial Intelligence & Machine Learning (AIML)</option>
+          <option value="AIDS">AI & Data Science (AIDS)</option>
+          <option value="IT">Information Technology (IT)</option>
+          <option value="CSIT">Computer Science & Info Tech (CSIT)</option>
+          <option value="CIC">Cyber Security & IoT (CIC)</option>
+          <option value="ECE">Electronics & Communication (ECE)</option>
+          <option value="EEE">Electrical & Electronics (EEE)</option>
+          <option value="MECH">Mechanical Engineering (MECH)</option>
+          <option value="CIVIL">Civil Engineering (CIVIL)</option>
+        </select>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="form-group">
+          <label class="form-label" for="userPassword">Password</label>
+          <div class="input-with-icon">
+            <input type="password" id="userPassword" name="userPassword" class="form-control" placeholder="Min. 6 chars" required minlength="6" autocomplete="new-password">
+            <button type="button" class="input-icon-btn" onclick="togglePasswordVisibility('userPassword', this)">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="confirmPassword">Confirm Password</label>
+          <div class="input-with-icon">
+            <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" placeholder="••••••••" required minlength="6" autocomplete="new-password">
+            <button type="button" class="input-icon-btn" onclick="togglePasswordVisibility('confirmPassword', this)">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 1.25rem;">
+        <label style="display: flex; align-items: flex-start; gap: 0.5rem; font-size: 0.825rem; color: var(--text-muted); cursor: pointer;">
+          <input type="checkbox" required style="margin-top: 0.25rem;">
+          <span>I agree to use StudyBuddy strictly for academic collaboration and agree to the platform guidelines.</span>
+        </label>
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.75rem;">
+        <i class="fas fa-user-plus"></i> Complete Registration
+      </button>
+    </form>
+
+    <div style="text-align: center; margin-top: 1.75rem; font-size: 0.875rem; color: var(--text-muted);">
+      Already have an account? 
+      <a href="/login" style="color: var(--primary); font-weight: 600;">Sign in here</a>
+    </div>
+  </div>
+</main>
+
+<script>
+document.getElementById('regForm').addEventListener('submit', function(e) {
+  const pass = document.getElementById('userPassword').value;
+  const conf = document.getElementById('confirmPassword').value;
+  if (pass !== conf) {
+    e.preventDefault();
+    window.showToast('Passwords do not match!', 'error');
+  }
+});
+</script>
+
+<%- include('partials/footer') %>

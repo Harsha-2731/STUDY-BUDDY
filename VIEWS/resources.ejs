@@ -1,0 +1,265 @@
+<%- include('partials/head', { title: 'Academic Resource Explorer', bodyClass: 'app-layout' }) %>
+
+<%- include('partials/sidebar', { activeNav: 'resources' }) %>
+
+<div class="main-content">
+  <%- include('partials/navbar', { pageTitle: 'Explore Resources' }) %>
+
+  <main class="page-container">
+    <!-- Header Section -->
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 2rem;">
+      <div>
+        <h1 style="font-size: 1.85rem; font-weight: 800; color: var(--text-main); line-height: 1.2;">
+          Academic Resource Explorer
+        </h1>
+        <p style="font-size: 0.95rem; color: var(--text-muted); margin-top: 0.25rem;">
+          Discover and access 1,350+ engineering notes, syllabus units, and study materials.
+        </p>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <span class="badge badge-primary" style="font-size: 0.85rem; padding: 0.4rem 0.85rem;">
+          <i class="fas fa-layer-group"></i> <%= totalCount %> Verified Materials
+        </span>
+      </div>
+    </div>
+
+    <!-- 10 Branch Selector Chips -->
+    <div style="margin-bottom: 1.5rem; overflow-x: auto; padding-bottom: 0.5rem;">
+      <div style="display: flex; gap: 0.5rem; min-width: max-content;">
+        <a href="/resources<%= currentQueryString ? currentQueryString.replace(/[?&]branch=[^&]*/, '').replace(/^&/, '?') : '' %>" 
+           class="btn btn-sm <%= !selectedBranch ? 'btn-primary' : 'btn-secondary' %>" style="border-radius: var(--radius-full);">
+          All Branches
+        </a>
+        <% const branches = ['CSE', 'AIML', 'AIDS', 'IT', 'CSIT', 'CIC', 'ECE', 'EEE', 'MECH', 'CIVIL']; %>
+        <% branches.forEach(b => { %>
+          <a href="/resources?branch=<%= b %><%= selectedYear ? '&year=' + encodeURIComponent(selectedYear) : '' %><%= selectedSemester ? '&semester=' + encodeURIComponent(selectedSemester) : '' %>" 
+             class="btn btn-sm <%= (selectedBranch === b) ? 'btn-primary' : 'btn-secondary' %>" style="border-radius: var(--radius-full);">
+            <%= b %>
+          </a>
+        <% }); %>
+      </div>
+    </div>
+
+    <!-- Filter & Search Bar Form -->
+    <div class="card" style="padding: 1.25rem; margin-bottom: 2rem;">
+      <form action="/resources" method="GET" id="filterForm">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; align-items: flex-end;">
+          
+          <!-- Search input -->
+          <div style="grid-column: span 2; @media(max-width: 640px){grid-column: span 1;}">
+            <label class="form-label" style="font-size: 0.8rem;"><i class="fas fa-search text-primary"></i> Search Keyword</label>
+            <input type="text" name="search" class="form-control" placeholder="Search topic, subject, or keywords..." value="<%= searchQuery || '' %>">
+          </div>
+
+          <!-- Branch -->
+          <div>
+            <label class="form-label" style="font-size: 0.8rem;">Branch</label>
+            <select name="branch" class="form-select" onchange="this.form.submit()">
+              <option value="">All Branches</option>
+              <% branches.forEach(b => { %>
+                <option value="<%= b %>" <%= (selectedBranch === b) ? 'selected' : '' %>><%= b %></option>
+              <% }); %>
+            </select>
+          </div>
+
+          <!-- Year -->
+          <div>
+            <label class="form-label" style="font-size: 0.8rem;">Academic Year</label>
+            <select name="year" class="form-select" onchange="this.form.submit()">
+              <option value="">All Years</option>
+              <option value="1st Year" <%= (selectedYear === '1st Year') ? 'selected' : '' %>>1st Year</option>
+              <option value="2nd Year" <%= (selectedYear === '2nd Year') ? 'selected' : '' %>>2nd Year</option>
+              <option value="3rd Year" <%= (selectedYear === '3rd Year') ? 'selected' : '' %>>3rd Year</option>
+              <option value="4th Year" <%= (selectedYear === '4th Year') ? 'selected' : '' %>>4th Year</option>
+            </select>
+          </div>
+
+          <!-- Semester -->
+          <div>
+            <label class="form-label" style="font-size: 0.8rem;">Semester</label>
+            <select name="semester" class="form-select" onchange="this.form.submit()">
+              <option value="">All Semesters</option>
+              <option value="1st sem" <%= (selectedSemester === '1st sem') ? 'selected' : '' %>>1st Sem</option>
+              <option value="2nd sem" <%= (selectedSemester === '2nd sem') ? 'selected' : '' %>>2nd Sem</option>
+            </select>
+          </div>
+
+          <!-- Subject -->
+          <div>
+            <label class="form-label" style="font-size: 0.8rem;">Subject</label>
+            <select name="subject" class="form-select" onchange="this.form.submit()">
+              <option value="">All Subjects</option>
+              <% if (availableSubjects && availableSubjects.length > 0) { %>
+                <% availableSubjects.forEach(s => { %>
+                  <option value="<%= s %>" <%= (selectedSubject === s) ? 'selected' : '' %>><%= s %></option>
+                <% }); %>
+              <% } %>
+            </select>
+          </div>
+
+          <!-- Actions -->
+          <div style="display: flex; gap: 0.5rem;">
+            <button type="submit" class="btn btn-primary" style="flex: 1;">
+              <i class="fas fa-filter"></i> Filter
+            </button>
+            <a href="/resources" class="btn btn-secondary btn-icon" title="Reset Filters">
+              <i class="fas fa-rotate-right"></i>
+            </a>
+          </div>
+
+        </div>
+      </form>
+    </div>
+
+    <!-- Active Filter Tags -->
+    <% if (selectedBranch || selectedYear || selectedSemester || selectedSubject || searchQuery) { %>
+      <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem;">
+        <span style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">Active Filters:</span>
+        <% if (selectedBranch) { %>
+          <span class="badge badge-primary"><%= selectedBranch %></span>
+        <% } %>
+        <% if (selectedYear) { %>
+          <span class="badge badge-secondary"><%= selectedYear %></span>
+        <% } %>
+        <% if (selectedSemester) { %>
+          <span class="badge badge-secondary"><%= selectedSemester %></span>
+        <% } %>
+        <% if (selectedSubject) { %>
+          <span class="badge badge-primary"><%= selectedSubject %></span>
+        <% } %>
+        <% if (searchQuery) { %>
+          <span class="badge badge-warning">"<%= searchQuery %>"</span>
+        <% } %>
+        <a href="/resources" style="font-size: 0.775rem; color: var(--danger); font-weight: 600; margin-left: 0.5rem;">Clear All</a>
+      </div>
+    <% } %>
+
+    <!-- Resource Cards Grid -->
+    <% if (resources && resources.length > 0) { %>
+      <div class="resource-grid" style="margin-bottom: 2.5rem;">
+        <% resources.forEach(res => { %>
+          <% const isSaved = userBookmarks.includes(res._id.toString()); %>
+          <div class="resource-card">
+            <div>
+              <div class="resource-card-header">
+                <span class="badge badge-primary">
+                  <%= res.branch %> &bull; <%= res.year %>
+                </span>
+                <button type="button" class="btn-icon btn-sm <%= isSaved ? 'active' : '' %>" 
+                        onclick="toggleBookmark('<%= res._id %>', this)" title="<%= isSaved ? 'Remove Bookmark' : 'Save to Library' %>">
+                  <i class="<%= isSaved ? 'fas fa-bookmark text-primary' : 'far fa-bookmark' %>"></i>
+                </button>
+              </div>
+
+              <h3 class="resource-title" style="margin-bottom: 0.5rem;">
+                <%= res.topic %>
+              </h3>
+
+              <div class="resource-badges">
+                <span class="badge badge-secondary"><i class="fas fa-book"></i> <%= res.subject %></span>
+                <span class="badge badge-secondary"><i class="fas fa-layer-group"></i> <%= res.unit || '1st unit' %></span>
+                <span class="badge badge-success"><i class="fas fa-check"></i> Verified</span>
+              </div>
+
+              <% if (res.description) { %>
+                <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1rem;">
+                  <%= res.description %>
+                </p>
+              <% } %>
+            </div>
+
+            <div class="resource-footer">
+              <span style="font-size: 0.75rem; color: var(--text-light); text-transform: uppercase;">
+                <%= res.type || 'Google Drive' %>
+              </span>
+              <div style="display: flex; gap: 0.5rem;">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="previewResource('<%= res.topic %>', '<%= res.subject %>', '<%= res.branch %>', '<%= res.unit %>', '<%= res.link %>')">
+                  <i class="fas fa-eye"></i> Details
+                </button>
+                <a href="<%= res.link %>" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
+                  <i class="fas fa-arrow-up-right-from-square"></i> Open Note
+                </a>
+              </div>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+
+      <!-- Server-Side Pagination -->
+      <% if (totalPages > 1) { %>
+        <div style="display: flex; justify-content: center; align-items: center; gap: 0.5rem; margin-top: 2rem;">
+          <% if (currentPage > 1) { %>
+            <a href="/resources?page=<%= currentPage - 1 %><%= currentQueryString %>" class="btn btn-secondary btn-sm">
+              &larr; Previous
+            </a>
+          <% } %>
+
+          <span style="font-size: 0.875rem; font-weight: 600; color: var(--text-muted); padding: 0 0.75rem;">
+            Page <%= currentPage %> of <%= totalPages %> (<%= totalCount %> results)
+          </span>
+
+          <% if (currentPage < totalPages) { %>
+            <a href="/resources?page=<%= currentPage + 1 %><%= currentQueryString %>" class="btn btn-secondary btn-sm">
+              Next &rarr;
+            </a>
+          <% } %>
+        </div>
+      <% } %>
+
+    <% } else { %>
+      <!-- Empty State -->
+      <div class="empty-state">
+        <div class="empty-state-icon"><i class="fas fa-magnifying-glass"></i></div>
+        <h3 class="empty-state-title">No matching study materials found</h3>
+        <p class="empty-state-desc">
+          Try loosening your filter parameters or search for general engineering subjects like M1, Data Structures, or Physics.
+        </p>
+        <a href="/resources" class="btn btn-primary">Reset Filters</a>
+      </div>
+    <% } %>
+  </main>
+</div>
+
+<!-- Resource Detail & Preview Modal Function -->
+<script>
+function previewResource(topic, subject, branch, unit, link) {
+  const dialog = document.getElementById('globalModalDialog');
+  const backdrop = document.getElementById('globalModalBackdrop');
+  
+  dialog.innerHTML = `
+    <div class="modal-header">
+      <div>
+        <span class="badge badge-primary" style="margin-bottom: 0.35rem;">${branch} &bull; ${subject}</span>
+        <h3 class="modal-title">${topic}</h3>
+      </div>
+      <button type="button" class="btn-icon btn-sm" onclick="document.getElementById('globalModalBackdrop').classList.remove('active')">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div style="background-color: var(--bg-subtle); border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 1.5rem;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; font-size: 0.85rem;">
+          <div><strong style="color:var(--text-main);">Subject:</strong> <span style="color:var(--text-muted);">${subject}</span></div>
+          <div><strong style="color:var(--text-main);">Curriculum Unit:</strong> <span style="color:var(--text-muted);">${unit || '1st unit'}</span></div>
+          <div><strong style="color:var(--text-main);">Engineering Branch:</strong> <span style="color:var(--text-muted);">${branch}</span></div>
+          <div><strong style="color:var(--text-main);">Status:</strong> <span class="badge badge-success">Verified Link</span></div>
+        </div>
+      </div>
+      <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5;">
+        This resource contains official notes and question materials hosted on academic cloud storage. You can open and save it to your personal library.
+      </p>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline" onclick="document.getElementById('globalModalBackdrop').classList.remove('active')">Close</button>
+      <a href="${link}" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+        <i class="fas fa-external-link-alt"></i> Open Resource Now
+      </a>
+    </div>
+  `;
+
+  backdrop.classList.add('active');
+}
+</script>
+
+<%- include('partials/footer') %>

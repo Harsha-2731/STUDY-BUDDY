@@ -1,0 +1,296 @@
+<%- include('partials/head', { title: 'Student Dashboard', bodyClass: 'app-layout' }) %>
+
+<%- include('partials/sidebar', { activeNav: 'dashboard' }) %>
+
+<div class="main-content">
+  <%- include('partials/navbar', { pageTitle: 'Overview' }) %>
+
+  <!-- Student Onboarding Modal if needed -->
+  <%- include('partials/onboarding-modal') %>
+
+  <main class="page-container">
+    <!-- Welcome Header Banner -->
+    <div style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(14, 165, 233, 0.1)); border: 1px solid var(--border-subtle); border-radius: var(--radius-xl); padding: 2rem; margin-bottom: 2rem; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1.5rem;">
+      <div>
+        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem;">
+          <span class="badge badge-primary"><i class="fas fa-graduation-cap"></i> <%= user.academicBranch || 'CSE' %> &bull; <%= user.academicYear || '1st Year' %></span>
+          <span class="badge badge-secondary"><%= user.academicSemester || '1st sem' %></span>
+        </div>
+        <h1 style="font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 800; color: var(--text-main); line-height: 1.2;">
+          Welcome back, <%= user.userName %>! 👋
+        </h1>
+        <p style="font-size: 0.95rem; color: var(--text-muted); margin-top: 0.25rem;">
+          Your academic curriculum and resources are up to date for this semester.
+        </p>
+      </div>
+
+      <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+        <a href="/resources?branch=<%= user.academicBranch || 'CSE' %>&year=<%= user.academicYear || '1st Year' %>&semester=<%= user.academicSemester || '1st sem' %>" class="btn btn-primary">
+          <i class="fas fa-compass"></i> Explore Semester Notes
+        </a>
+        <a href="/planner" class="btn btn-secondary">
+          <i class="fas fa-stopwatch"></i> Focus Session
+        </a>
+      </div>
+    </div>
+
+    <!-- Overview Metrics Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem; margin-bottom: 2rem;">
+      <div class="stat-card">
+        <div>
+          <div class="stat-label">Saved Resources</div>
+          <div class="stat-value" id="userSavedCount"><%= stats.savedCount || 0 %></div>
+          <div style="font-size: 0.775rem; color: var(--text-muted); margin-top: 0.35rem;">In personal library</div>
+        </div>
+        <div class="stat-icon primary"><i class="fas fa-bookmark"></i></div>
+      </div>
+
+      <div class="stat-card">
+        <div>
+          <div class="stat-label">Semester Subjects</div>
+          <div class="stat-value"><%= stats.subjectsCount || 0 %></div>
+          <div style="font-size: 0.775rem; color: var(--text-muted); margin-top: 0.35rem;">For <%= user.academicBranch || 'CSE' %></div>
+        </div>
+        <div class="stat-icon secondary"><i class="fas fa-book-open"></i></div>
+      </div>
+
+      <div class="stat-card">
+        <div>
+          <div class="stat-label">Syllabus Completion</div>
+          <div class="stat-value"><%= stats.completionPct || 0 %>%</div>
+          <div style="font-size: 0.775rem; color: var(--success); margin-top: 0.35rem;"><i class="fas fa-check-double"></i> <%= stats.completedTopics || 0 %> Topics mastered</div>
+        </div>
+        <div class="stat-icon success"><i class="fas fa-list-check"></i></div>
+      </div>
+
+      <div class="stat-card">
+        <div>
+          <div class="stat-label">Study Focus Time</div>
+          <div class="stat-value"><%= stats.focusMinutes || 0 %>m</div>
+          <div style="font-size: 0.775rem; color: var(--text-muted); margin-top: 0.35rem;"><%= stats.sessionsCount || 0 %> Pomodoro sessions</div>
+        </div>
+        <div class="stat-icon warning"><i class="fas fa-clock"></i></div>
+      </div>
+    </div>
+
+    <!-- Main Workspace Split: Continue Learning & Focus Tasks -->
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; margin-bottom: 2.5rem; @media(max-width: 1024px){grid-template-columns: 1fr;}">
+      
+      <!-- Left Column: Continue Learning & Subjects -->
+      <div>
+        <!-- Continue Learning (Saved / Recent) -->
+        <div class="card" style="margin-bottom: 2rem;">
+          <div class="card-header">
+            <div>
+              <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-main);">Continue Learning</h3>
+              <p style="font-size: 0.8rem; color: var(--text-muted);">Quick access to your saved notes and priority topics</p>
+            </div>
+            <a href="/library" style="font-size: 0.85rem; font-weight: 600;">View All (<%= stats.savedCount || 0 %>) &rarr;</a>
+          </div>
+          <div class="card-body">
+            <% if (bookmarks && bookmarks.length > 0) { %>
+              <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+                <% bookmarks.slice(0, 4).forEach(item => { %>
+                  <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.85rem 1rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); background-color: var(--bg-subtle);">
+                    <div style="display: flex; align-items: center; gap: 0.85rem; overflow: hidden;">
+                      <div style="width: 38px; height: 38px; border-radius: var(--radius-sm); background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;">
+                        <i class="fas fa-file-pdf"></i>
+                      </div>
+                      <div style="overflow: hidden;">
+                        <div style="font-weight: 600; font-size: 0.925rem; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"><%= item.topic %></div>
+                        <div style="font-size: 0.775rem; color: var(--text-muted);"><%= item.subject %> &bull; <%= item.unit || '1st unit' %> &bull; <%= item.branch %></div>
+                      </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0;">
+                      <a href="<%= item.link %>" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
+                        <i class="fas fa-arrow-up-right-from-square"></i> Open Note
+                      </a>
+                    </div>
+                  </div>
+                <% }); %>
+              </div>
+            <% } else { %>
+              <div class="empty-state" style="padding: 2rem 1rem;">
+                <div class="empty-state-icon"><i class="fas fa-bookmark"></i></div>
+                <h4 class="empty-state-title">No bookmarks yet</h4>
+                <p class="empty-state-desc">Explore your subjects below and click the bookmark button to save notes here for fast access.</p>
+                <a href="/resources" class="btn btn-primary btn-sm">Explore Study Resources</a>
+              </div>
+            <% } %>
+          </div>
+        </div>
+
+        <!-- Subject Overview Cards -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-main);">Current Semester Subjects</h3>
+              <p style="font-size: 0.8rem; color: var(--text-muted);"><%= user.academicBranch || 'CSE' %> &bull; <%= user.academicYear || '1st Year' %> &bull; <%= user.academicSemester || '1st sem' %></p>
+            </div>
+            <a href="/subjects" style="font-size: 0.85rem; font-weight: 600;">Full Syllabus &rarr;</a>
+          </div>
+          <div class="card-body">
+            <% if (semesterSubjects && semesterSubjects.length > 0) { %>
+              <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem;">
+                <% semesterSubjects.slice(0, 6).forEach(sub => { %>
+                  <a href="/resources?subject=<%= encodeURIComponent(sub.name) %>" class="card card-hoverable" style="padding: 1.15rem; text-decoration: none; border-left: 4px solid var(--primary);">
+                    <div style="font-weight: 700; font-size: 1.05rem; color: var(--text-main); margin-bottom: 0.25rem;"><%= sub.name %></div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted);"><%= sub.count %> Study Units</div>
+                    <div style="margin-top: 0.75rem; font-size: 0.775rem; color: var(--primary); font-weight: 600;">Browse Notes &rarr;</div>
+                  </a>
+                <% }); %>
+              </div>
+            <% } else { %>
+              <div class="empty-state" style="padding: 2rem 1rem;">
+                <p style="color: var(--text-muted);">No subjects found for this selection.</p>
+                <a href="/resources" class="btn btn-secondary btn-sm">View All Resources</a>
+              </div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Study Planner & Pomodoro Timer -->
+      <div>
+        <!-- Quick Focus Timer Card -->
+        <div class="card" style="margin-bottom: 2rem;">
+          <div class="card-header">
+            <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 0.5rem;">
+              <i class="fas fa-stopwatch text-primary"></i> Focus Session
+            </h3>
+            <span class="badge badge-primary">Pomodoro</span>
+          </div>
+          <div class="card-body" style="text-align: center;">
+            <div class="timer-dial" style="width: 170px; height: 170px; margin: 0.5rem auto 1.25rem;">
+              <div id="dashTimerDisplay" class="timer-digits" style="font-size: 2.25rem;">25:00</div>
+              <div id="dashTimerLabel" class="timer-label">Ready</div>
+            </div>
+
+            <div style="display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 1rem;">
+              <button id="dashTimerBtn" type="button" class="btn btn-primary" onclick="toggleDashTimer()">
+                <i class="fas fa-play"></i> Start 25m Focus
+              </button>
+              <button type="button" class="btn btn-secondary btn-icon" onclick="resetDashTimer()" title="Reset">
+                <i class="fas fa-rotate-right"></i>
+              </button>
+            </div>
+            <a href="/planner" style="font-size: 0.8rem; color: var(--text-muted);">Open Full Study Planner &rarr;</a>
+          </div>
+        </div>
+
+        <!-- Today's Study Tasks -->
+        <div class="card">
+          <div class="card-header">
+            <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-main);">Study Tasks</h3>
+            <a href="/planner" style="font-size: 0.85rem; font-weight: 600;">+ New Task</a>
+          </div>
+          <div class="card-body">
+            <% if (recentTasks && recentTasks.length > 0) { %>
+              <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                <% recentTasks.slice(0, 5).forEach(task => { %>
+                  <div style="display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.65rem; border-radius: var(--radius-md); background-color: var(--bg-subtle);">
+                    <input type="checkbox" <%= task.status === 'completed' ? 'checked' : '' %> onchange="toggleTaskStatus('<%= task._id %>', this.checked)" style="margin-top: 0.25rem; cursor: pointer;">
+                    <div style="flex: 1; overflow: hidden;">
+                      <div style="font-size: 0.875rem; font-weight: 600; color: var(--text-main); text-decoration: <%= task.status === 'completed' ? 'line-through' : 'none' %>;">
+                        <%= task.title %>
+                      </div>
+                      <div style="display: flex; gap: 0.5rem; margin-top: 0.2rem; font-size: 0.725rem; color: var(--text-muted);">
+                        <span><%= task.subject %></span>
+                        <% if (task.priority === 'high') { %>
+                          <span style="color: var(--danger); font-weight: 600;">High Priority</span>
+                        <% } %>
+                      </div>
+                    </div>
+                  </div>
+                <% }); %>
+              </div>
+            <% } else { %>
+              <div style="text-align: center; padding: 1.5rem 0; color: var(--text-muted); font-size: 0.875rem;">
+                <i class="fas fa-clipboard-check" style="font-size: 1.5rem; color: var(--text-light); margin-bottom: 0.5rem; display: block;"></i>
+                No pending tasks today.
+              </div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+// Dashboard Mini-Timer
+let dashSecondsLeft = 25 * 60;
+let dashTimerInterval = null;
+let dashTimerRunning = false;
+
+function formatDashTime(sec) {
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+}
+
+function toggleDashTimer() {
+  const btn = document.getElementById('dashTimerBtn');
+  const label = document.getElementById('dashTimerLabel');
+  if (dashTimerRunning) {
+    clearInterval(dashTimerInterval);
+    dashTimerRunning = false;
+    btn.innerHTML = '<i class="fas fa-play"></i> Resume Focus';
+    label.textContent = 'Paused';
+  } else {
+    dashTimerRunning = true;
+    btn.innerHTML = '<i class="fas fa-pause"></i> Pause';
+    label.textContent = 'Focusing';
+    dashTimerInterval = setInterval(() => {
+      dashSecondsLeft--;
+      document.getElementById('dashTimerDisplay').textContent = formatDashTime(dashSecondsLeft);
+      if (dashSecondsLeft <= 0) {
+        clearInterval(dashTimerInterval);
+        dashTimerRunning = false;
+        label.textContent = 'Completed!';
+        btn.innerHTML = '<i class="fas fa-play"></i> Start 25m Focus';
+        logCompletedSession(25);
+        window.showToast('🎉 Focus session completed! Great job.', 'success');
+      }
+    }, 1000);
+  }
+}
+
+function resetDashTimer() {
+  clearInterval(dashTimerInterval);
+  dashTimerRunning = false;
+  dashSecondsLeft = 25 * 60;
+  document.getElementById('dashTimerDisplay').textContent = '25:00';
+  document.getElementById('dashTimerLabel').textContent = 'Ready';
+  document.getElementById('dashTimerBtn').innerHTML = '<i class="fas fa-play"></i> Start 25m Focus';
+}
+
+async function logCompletedSession(minutes) {
+  try {
+    await fetch('/api/study-sessions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ durationMinutes: minutes, sessionType: 'pomodoro' })
+    });
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+async function toggleTaskStatus(taskId, isChecked) {
+  try {
+    const res = await fetch(`/api/tasks/${taskId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: isChecked ? 'completed' : 'pending' })
+    });
+    if (res.ok) {
+      window.showToast(isChecked ? 'Task completed!' : 'Task reopened', 'success');
+    }
+  } catch (e) {
+    window.showToast('Failed to update task', 'error');
+  }
+}
+</script>
+
+<%- include('partials/footer') %>

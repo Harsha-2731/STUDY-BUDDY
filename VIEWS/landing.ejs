@@ -1,0 +1,296 @@
+<%- include('partials/head', { title: 'StudyBuddy — Academic Learning Platform for Engineers', bodyClass: 'public-layout' }) %>
+
+<!-- Public Navbar -->
+<header class="top-navbar" style="border-bottom: 1px solid var(--border-subtle);">
+  <a href="/" class="navbar-brand">
+    <span class="brand-badge"><i class="fas fa-graduation-cap"></i></span>
+    <span>StudyBuddy</span>
+  </a>
+
+  <div style="display: flex; align-items: center; gap: 2rem; display: none; @media(min-width: 768px){display: flex;}">
+    <a href="#features" style="font-weight: 500; color: var(--text-muted); font-size: 0.925rem;">Features</a>
+    <a href="#branches" style="font-weight: 500; color: var(--text-muted); font-size: 0.925rem;">Branches</a>
+    <a href="#how-it-works" style="font-weight: 500; color: var(--text-muted); font-size: 0.925rem;">How It Works</a>
+    <a href="#faq" style="font-weight: 500; color: var(--text-muted); font-size: 0.925rem;">FAQ</a>
+  </div>
+
+  <div class="navbar-actions">
+    <button type="button" class="btn-icon theme-toggle-btn" onclick="toggleTheme()" title="Toggle Theme">
+      <i class="fas fa-moon"></i>
+    </button>
+    <a href="/login" class="btn btn-outline btn-sm">Log In</a>
+    <a href="/register" class="btn btn-primary btn-sm">Get Started</a>
+  </div>
+</header>
+
+<main class="main-content">
+  <!-- Hero Section -->
+  <section style="padding: 5rem 1.5rem 4rem; text-align: center; position: relative; overflow: hidden; background: radial-gradient(circle at top, var(--primary-light) 0%, transparent 70%);">
+    <div style="max-width: 900px; margin: 0 auto; position: relative; z-index: 2;">
+      <div style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.4rem 1rem; border-radius: var(--radius-full); background-color: var(--bg-surface); border: 1px solid var(--border-subtle); box-shadow: var(--shadow-sm); margin-bottom: 1.5rem; font-size: 0.85rem; font-weight: 600; color: var(--primary);">
+        <i class="fas fa-sparkles"></i> 1,350+ Verified Engineering Notes & Syllabus Materials
+      </div>
+
+      <h1 style="font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.03em; color: var(--text-main); margin-bottom: 1.5rem;">
+        Your Entire Academic World, <br>
+        <span style="background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">One Smart Workspace.</span>
+      </h1>
+
+      <p style="font-size: clamp(1.05rem, 2vw, 1.25rem); color: var(--text-muted); max-width: 700px; margin: 0 auto 2.5rem; line-height: 1.6;">
+        Find engineering notes, explore your syllabus, save important resources, and organize your learning — all in one place.
+      </p>
+
+      <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; margin-bottom: 3rem;">
+        <a href="/register" class="btn btn-primary btn-lg">
+          <i class="fas fa-rocket"></i> Get Started Free
+        </a>
+        <a href="/login" class="btn btn-secondary btn-lg">
+          <i class="fas fa-arrow-right-to-bracket"></i> Student Login
+        </a>
+      </div>
+
+      <!-- Quick Interactive Search Teaser -->
+      <form action="/resources" method="GET" style="max-width: 650px; margin: 0 auto; box-shadow: var(--shadow-xl); border-radius: var(--radius-xl); border: 1px solid var(--border-medium); background-color: var(--bg-surface); padding: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+        <i class="fas fa-search" style="padding-left: 1rem; color: var(--text-light); font-size: 1.1rem;"></i>
+        <input type="text" name="search" placeholder="Search subject (e.g. M1, Data Structures, Physics, VLSI)..." style="flex: 1; border: none; background: transparent; padding: 0.75rem 0.5rem; font-size: 1rem; color: var(--text-main); outline: none;">
+        <button type="submit" class="btn btn-primary" style="border-radius: var(--radius-lg);">
+          Find Notes
+        </button>
+      </form>
+    </div>
+
+    <!-- Product Preview Mockup -->
+    <div style="max-width: 1100px; margin: 4rem auto 0; padding: 0.75rem; background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(14,165,233,0.2)); border-radius: var(--radius-xl); box-shadow: var(--shadow-xl); border: 1px solid var(--border-subtle);">
+      <div style="background-color: var(--bg-surface); border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border-subtle); box-shadow: var(--shadow-md);">
+        <!-- Mock Browser Bar -->
+        <div style="background-color: var(--bg-subtle); padding: 0.75rem 1.25rem; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; gap: 0.5rem;">
+          <span style="width: 10px; height: 10px; border-radius: 50%; background-color: #ef4444;"></span>
+          <span style="width: 10px; height: 10px; border-radius: 50%; background-color: #f59e0b;"></span>
+          <span style="width: 10px; height: 10px; border-radius: 50%; background-color: #10b981;"></span>
+          <span style="margin-left: 1rem; font-size: 0.8rem; color: var(--text-muted); background-color: var(--bg-surface); padding: 0.2rem 1rem; border-radius: var(--radius-full); border: 1px solid var(--border-subtle);">https://studybuddy.edu/workspace/CSE/2nd-Year</span>
+        </div>
+
+        <!-- Mock Dashboard Interior -->
+        <div style="padding: 2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; text-align: left;">
+          <div style="padding: 1.5rem; background-color: var(--bg-subtle); border-radius: var(--radius-md); border-left: 4px solid var(--primary);">
+            <div style="font-size: 0.8rem; font-weight: 700; color: var(--primary); text-transform: uppercase;">CSE &bull; 1st Year &bull; 1st Sem</div>
+            <h4 style="font-size: 1.15rem; font-weight: 700; margin: 0.4rem 0;">Mathematics-1 (M1)</h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">5 Units available &bull; Matrices, Differential Calculus, Sequences</p>
+            <div style="display: flex; gap: 0.5rem;">
+              <span class="badge badge-primary"><i class="fas fa-file-pdf"></i> Verified PDF</span>
+              <span class="badge badge-success"><i class="fas fa-check"></i> 100% Syllabus</span>
+            </div>
+          </div>
+
+          <div style="padding: 1.5rem; background-color: var(--bg-subtle); border-radius: var(--radius-md); border-left: 4px solid var(--secondary);">
+            <div style="font-size: 0.8rem; font-weight: 700; color: var(--secondary); text-transform: uppercase;">CSE &bull; 1st Year &bull; 2nd Sem</div>
+            <h4 style="font-size: 1.15rem; font-weight: 700; margin: 0.4rem 0;">Data Structures (DS)</h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">Stacks, Queues, Trees, Graphs, Sorting Algorithms</p>
+            <div style="display: flex; gap: 0.5rem;">
+              <span class="badge badge-primary"><i class="fas fa-file-pdf"></i> Complete Notes</span>
+              <span class="badge badge-warning"><i class="fas fa-clock"></i> Unit 2 Active</span>
+            </div>
+          </div>
+
+          <div style="padding: 1.5rem; background-color: var(--bg-subtle); border-radius: var(--radius-md); border-left: 4px solid var(--success);">
+            <div style="font-size: 0.8rem; font-weight: 700; color: var(--success); text-transform: uppercase;">Personal Progress</div>
+            <h4 style="font-size: 1.15rem; font-weight: 700; margin: 0.4rem 0;">Syllabus Completion</h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem;">12 of 15 Topics Mastered</p>
+            <div style="width: 100%; height: 8px; background-color: var(--border-medium); border-radius: 4px; overflow: hidden;">
+              <div style="width: 80%; height: 100%; background: linear-gradient(90deg, var(--primary), var(--success));"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 Engineering Branches Section -->
+  <section id="branches" style="padding: 5rem 1.5rem; max-width: 1200px; margin: 0 auto; width: 100%;">
+    <div style="text-align: center; margin-bottom: 3rem;">
+      <span class="badge badge-primary" style="margin-bottom: 0.75rem;">Curriculum Coverage</span>
+      <h2 style="font-size: 2.25rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.02em;">
+        Supporting All Major Engineering Branches
+      </h2>
+      <p style="color: var(--text-muted); max-width: 600px; margin: 0.5rem auto 0;">
+        From foundation subjects to branch-specific core engineering disciplines.
+      </p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.25rem;">
+      <% const branchList = [
+        { code: 'CSE', name: 'Computer Science', icon: 'fa-laptop-code', color: '#6366f1' },
+        { code: 'AIML', name: 'AI & Machine Learning', icon: 'fa-brain', color: '#8b5cf6' },
+        { code: 'AIDS', name: 'AI & Data Science', icon: 'fa-chart-network', color: '#0ea5e9' },
+        { code: 'IT', name: 'Information Technology', icon: 'fa-server', color: '#10b981' },
+        { code: 'CSIT', name: 'CS & Info Tech', icon: 'fa-microchip', color: '#f59e0b' },
+        { code: 'CIC', name: 'Cyber Security & IoT', icon: 'fa-shield-halved', color: '#ef4444' },
+        { code: 'ECE', name: 'Electronics & Comm.', icon: 'fa-tower-broadcast', color: '#ec4899' },
+        { code: 'EEE', name: 'Electrical & Electronics', icon: 'fa-bolt', color: '#eab308' },
+        { code: 'MECH', name: 'Mechanical Engg.', icon: 'fa-gears', color: '#64748b' },
+        { code: 'CIVIL', name: 'Civil Engineering', icon: 'fa-building-columns', color: '#14b8a6' }
+      ]; %>
+
+      <% branchList.forEach(b => { %>
+        <a href="/login" class="card card-hoverable" style="padding: 1.5rem; text-align: center; text-decoration: none;">
+          <div style="width: 52px; height: 52px; border-radius: var(--radius-md); background: <%= b.color %>15; color: <%= b.color %>; display: inline-flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 1rem;">
+            <i class="fas <%= b.icon %>"></i>
+          </div>
+          <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.25rem;"><%= b.code %></h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted);"><%= b.name %></p>
+        </a>
+      <% }); %>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" style="padding: 5rem 1.5rem; background-color: var(--bg-surface); border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle);">
+    <div style="max-width: 1200px; margin: 0 auto;">
+      <div style="text-align: center; margin-bottom: 3.5rem;">
+        <span class="badge badge-primary" style="margin-bottom: 0.75rem;">Engineered For Students</span>
+        <h2 style="font-size: 2.25rem; font-weight: 800; color: var(--text-main);">
+          Everything You Need For Academic Excellence
+        </h2>
+        <p style="color: var(--text-muted); max-width: 600px; margin: 0.5rem auto 0;">
+          Designed to eliminate chaos, replace scattered links, and give you structured learning flow.
+        </p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem;">
+        <div class="card" style="padding: 2rem;">
+          <div class="stat-icon primary" style="margin-bottom: 1.25rem;"><i class="fas fa-sitemap"></i></div>
+          <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-main);">Academic Hierarchy</h3>
+          <p style="font-size: 0.925rem; color: var(--text-muted); line-height: 1.6;">
+            Navigate cleanly from Branch &rarr; Year &rarr; Semester &rarr; Subject &rarr; Unit &rarr; Topic &rarr; Resource without getting lost.
+          </p>
+        </div>
+
+        <div class="card" style="padding: 2rem;">
+          <div class="stat-icon success" style="margin-bottom: 1.25rem;"><i class="fas fa-list-check"></i></div>
+          <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-main);">Syllabus Progress Tracker</h3>
+          <p style="font-size: 0.925rem; color: var(--text-muted); line-height: 1.6;">
+            Check off units and topics as you study. Your syllabus completion percentage is stored safely in MongoDB and recalculated instantly.
+          </p>
+        </div>
+
+        <div class="card" style="padding: 2rem;">
+          <div class="stat-icon warning" style="margin-bottom: 1.25rem;"><i class="fas fa-stopwatch"></i></div>
+          <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-main);">Pomodoro Focus Timer</h3>
+          <p style="font-size: 0.925rem; color: var(--text-muted); line-height: 1.6;">
+            Built-in configurable 25-minute focus intervals and breaks that log completed study sessions directly into your student statistics.
+          </p>
+        </div>
+
+        <div class="card" style="padding: 2rem;">
+          <div class="stat-icon secondary" style="margin-bottom: 1.25rem;"><i class="fas fa-bookmark"></i></div>
+          <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-main);">Personal Study Library</h3>
+          <p style="font-size: 0.925rem; color: var(--text-muted); line-height: 1.6;">
+            Save critical notes and drive folders with one click. Search and filter your personal bookmarks anytime from any device.
+          </p>
+        </div>
+
+        <div class="card" style="padding: 2rem;">
+          <div class="stat-icon primary" style="margin-bottom: 1.25rem;"><i class="fas fa-cloud-arrow-up"></i></div>
+          <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-main);">Notes Upload & Management</h3>
+          <p style="font-size: 0.925rem; color: var(--text-muted); line-height: 1.6;">
+            Upload your handwritten class notes, PDFs, and exam solutions with secure metadata tagging by subject and semester.
+          </p>
+        </div>
+
+        <div class="card" style="padding: 2rem;">
+          <div class="stat-icon success" style="margin-bottom: 1.25rem;"><i class="fas fa-circle-half-stroke"></i></div>
+          <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-main);">Dark & Light Themes</h3>
+          <p style="font-size: 0.925rem; color: var(--text-muted); line-height: 1.6;">
+            Full ergonomic theme support designed for late-night exam prep. Seamlessly persists across refreshes and matches your device.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section id="how-it-works" style="padding: 5rem 1.5rem; max-width: 1200px; margin: 0 auto; width: 100%;">
+    <div style="text-align: center; margin-bottom: 3.5rem;">
+      <span class="badge badge-primary" style="margin-bottom: 0.75rem;">Simple 5-Step Journey</span>
+      <h2 style="font-size: 2.25rem; font-weight: 800; color: var(--text-main);">
+        How StudyBuddy Works
+      </h2>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; text-align: center;">
+      <div style="padding: 1.5rem; background-color: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg);">
+        <div style="width: 44px; height: 44px; border-radius: 50%; background: var(--primary); color: white; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; margin-bottom: 1rem;">1</div>
+        <h4 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-main);">Create Account</h4>
+        <p style="font-size: 0.85rem; color: var(--text-muted);">Sign up in 30 seconds with your student email.</p>
+      </div>
+
+      <div style="padding: 1.5rem; background-color: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg);">
+        <div style="width: 44px; height: 44px; border-radius: 50%; background: var(--secondary); color: white; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; margin-bottom: 1rem;">2</div>
+        <h4 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-main);">Select Profile</h4>
+        <p style="font-size: 0.85rem; color: var(--text-muted);">Pick your branch (CSE, ECE, etc.) and semester.</p>
+      </div>
+
+      <div style="padding: 1.5rem; background-color: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg);">
+        <div style="width: 44px; height: 44px; border-radius: 50%; background: var(--accent); color: white; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; margin-bottom: 1rem;">3</div>
+        <h4 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-main);">Browse Subjects</h4>
+        <p style="font-size: 0.85rem; color: var(--text-muted);">View all curriculum units and official syllabus topics.</p>
+      </div>
+
+      <div style="padding: 1.5rem; background-color: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg);">
+        <div style="width: 44px; height: 44px; border-radius: 50%; background: var(--warning); color: white; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; margin-bottom: 1rem;">4</div>
+        <h4 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-main);">Find Notes</h4>
+        <p style="font-size: 0.85rem; color: var(--text-muted);">Access verified PDFs, question papers, and drives.</p>
+      </div>
+
+      <div style="padding: 1.5rem; background-color: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg);">
+        <div style="width: 44px; height: 44px; border-radius: 50%; background: var(--success); color: white; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; margin-bottom: 1rem;">5</div>
+        <h4 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-main);">Track Progress</h4>
+        <p style="font-size: 0.85rem; color: var(--text-muted);">Bookmark favorites and tick off completed syllabus topics.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section id="faq" style="padding: 5rem 1.5rem; background-color: var(--bg-surface); border-top: 1px solid var(--border-subtle);">
+    <div style="max-width: 800px; margin: 0 auto;">
+      <div style="text-align: center; margin-bottom: 3rem;">
+        <span class="badge badge-primary" style="margin-bottom: 0.75rem;">Frequently Asked Questions</span>
+        <h2 style="font-size: 2.25rem; font-weight: 800; color: var(--text-main);">Got Questions? We Have Answers.</h2>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: 1rem;">
+        <div class="card" style="padding: 1.5rem;">
+          <h4 style="font-size: 1.05rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.5rem;">Is StudyBuddy free for engineering students?</h4>
+          <p style="font-size: 0.9rem; color: var(--text-muted);">Yes, StudyBuddy is completely free to use. All 1,350+ notes, syllabi, and resources are available without paywalls.</p>
+        </div>
+
+        <div class="card" style="padding: 1.5rem;">
+          <h4 style="font-size: 1.05rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.5rem;">Can I upload my own class notes?</h4>
+          <p style="font-size: 0.9rem; color: var(--text-muted);">Yes! Use the Upload section to contribute handwritten notes, PDFs, or previous exam solutions to your personal archive.</p>
+        </div>
+
+        <div class="card" style="padding: 1.5rem;">
+          <h4 style="font-size: 1.05rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.5rem;">How does the Syllabus Progress tracker work?</h4>
+          <p style="font-size: 0.9rem; color: var(--text-muted);">Every subject is segmented into official curriculum units and topics. Clicking a topic toggles your personal completion state in MongoDB.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Banner -->
+  <section style="padding: 5rem 1.5rem; text-align: center; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white;">
+    <div style="max-width: 700px; margin: 0 auto;">
+      <h2 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; color: white;">
+        Ready to Master Your Semester?
+      </h2>
+      <p style="font-size: 1.15rem; opacity: 0.9; margin-bottom: 2rem;">
+        Join thousands of engineering students who stay ahead in their curriculum with StudyBuddy.
+      </p>
+      <a href="/register" class="btn btn-lg" style="background-color: white; color: var(--primary); font-weight: 700;">
+        <i class="fas fa-graduation-cap"></i> Create Free Student Account
+      </a>
+    </div>
+  </section>
+</main>
+
+<%- include('partials/footer') %>
